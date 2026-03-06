@@ -123,10 +123,15 @@ Validates repo ownership, stores raw JSON to S3, creates Analysis DDB record, up
   "timestamp": "2026-02-22T10:30:00.000Z",
   "aiScore": 72,
   "breakdown": {
-    "semanticDuplicates": 65,
-    "contextFragmentation": 78,
-    "namingConsistency": 80,
-    "documentationHealth": 55
+    "cognitiveLoad": 72,
+    "aiSignalClarity": 85,
+    "agentGrounding": 90,
+    "patternEntropy": 65,
+    "conceptCohesion": 78,
+    "testabilityIndex": 80,
+    "docDrift": 55,
+    "dependencyHealth": 88,
+    "semanticDistance": 92
   },
   "summary": {
     "totalFiles": 42,

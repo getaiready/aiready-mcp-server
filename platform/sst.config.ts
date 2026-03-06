@@ -56,6 +56,28 @@ export default $config({
       ttl: 'ttl', // Enable TTL on the table (field doesn't need to be indexed)
     });
 
+    // EventBridge Bus for platform events
+    const bus = new sst.aws.Bus('PlatformBus');
+
+    // Queue for background analysis requests
+    const scanQueue = new sst.aws.Queue('ScanQueue', {
+      visibilityTimeout: '15 minutes',
+    });
+
+    // Queue for processing uploaded analysis results
+    const analysisQueue = new sst.aws.Queue('AnalysisQueue', {
+      visibilityTimeout: '5 minutes',
+    });
+
+    // Subscribe AnalysisQueue to the Bus (REMOVED: will send to SQS directly for better reliability in SST Ion)
+    /*
+    bus.subscribe('AnalysisUploadedRule', analysisQueue.arn, {
+      pattern: {
+        detailType: ['AnalysisUploaded'],
+      },
+    });
+    */
+
     // Next.js site configuration
     const siteConfig: sst.aws.NextjsArgs = {
       path: '.',
@@ -126,11 +148,6 @@ export default $config({
       };
     }
 
-    // Queue for background analysis requests
-    const scanQueue = new sst.aws.Queue('ScanQueue', {
-      visibilityTimeout: '15 minutes',
-    });
-
     // Lambda worker for scanning repositories
     const scanWorker = new sst.aws.Function('ScanWorker', {
       handler: 'src/worker/index.handler',
@@ -148,9 +165,29 @@ export default $config({
 
     scanQueue.subscribe(scanWorker.arn);
 
+    // Lambda worker for processing analysis results (calculating metrics/trends)
+    const analysisProcessor = new sst.aws.Function('AnalysisProcessor', {
+      handler: 'src/functions/process-analysis.handler',
+      timeout: '5 minutes',
+      memory: '1024 MB',
+      link: [table, bucket],
+      permissions: [
+        {
+          actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+          resources: ['*'],
+        },
+      ],
+      environment: {
+        S3_BUCKET: bucket.name,
+        DYNAMO_TABLE: table.name,
+      },
+    });
+
+    analysisQueue.subscribe(analysisProcessor.arn);
+
     const site = new sst.aws.Nextjs('Dashboard', {
       ...siteConfig,
-      link: [table, bucket, scanQueue, submissions],
+      link: [table, bucket, scanQueue, analysisQueue, submissions, bus],
       permissions: [
         {
           actions: ['ses:SendEmail', 'ses:SendRawEmail'],
@@ -164,6 +201,8 @@ export default $config({
       bucketName: bucket.name,
       tableName: table.name,
       scanQueueUrl: scanQueue.url,
+      analysisQueueUrl: analysisQueue.url,
+      busName: bus.name,
     };
   },
 });

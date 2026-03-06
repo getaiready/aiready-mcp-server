@@ -27,145 +27,58 @@ This document chronicles the evolution from v0.9 (3 simple scores) to the curren
 
 ---
 
-## Current Metric Dimensions (v0.12)
+## Current Core Metrics (v0.12+)
 
-### Tier 1: Active Spoke Tools (Measured Now)
+The AIReady platform evaluates code across **9 Core AI-Readiness Metrics**. These metrics are technology-agnostic and focus on how well an AI can understand, navigate, and modify the codebase.
 
-| Tool               | Weight | What It Measures                                                            |
-| ------------------ | ------ | --------------------------------------------------------------------------- |
-| `pattern-detect`   | 40     | Semantic duplication — same logic written differently, wasting token budget |
-| `context-analyzer` | 35     | Context efficiency — fragmentation, import depth, budget per file           |
-| `consistency`      | 25     | Naming/pattern consistency — AI intent inference accuracy                   |
-
-### Tier 2: New Dimensions (Planned Spokes / Core Calculations)
-
-| Dimension            | Weight | What It Measures                                                           |
-| -------------------- | ------ | -------------------------------------------------------------------------- |
-| `hallucination-risk` | 20     | Code patterns empirically causing AI to generate confidently wrong outputs |
-| `agent-grounding`    | 18     | How well an autonomous agent can navigate the codebase unaided             |
-| `testability`        | 18     | Whether AI-generated changes can be safely verified                        |
-| `doc-drift`          | 15     | Stale documentation actively misleading AI                                 |
-| `deps`               | 12     | Dependency health affecting AI suggestion accuracy                         |
+| Metric                  | Dimension  | What It Measures                                                            |
+| ----------------------- | ---------- | --------------------------------------------------------------------------- |
+| **Cognitive Load**      | Complexity | Human/AI comprehension ease; conceptual density per line.                   |
+| **AI Signal Clarity**   | Semantics  | Clarity of intent; absence of "hallucination traps" (overloads, magic values). |
+| **Agent Grounding**     | Context    | How well an autonomous agent can navigate the codebase unaided.             |
+| **Pattern Entropy**     | Structural | Statistical consistency of implementation patterns (Shannon entropy).        |
+| **Concept Cohesion**    | Structural | Logical grouping of exports by domain/concept.                              |
+| **Testability Index**   | Quality    | Degree to which changes can be safely verified by AI or humans.             |
+| **Documentation Drift** | Context    | Alignment between code behavior and its documentation/JSDoc.                |
+| **Dependency Health**   | Structural | Fragility and fragmentation of internal/external imports.                    |
+| **Semantic Distance**   | Semantics  | Terminological consistency across different modules/files.                  |
 
 ---
 
 ## Future-Proof Metric Primitives
 
-These are **technology-agnostic abstractions** in `packages/core/src/future-proof-metrics.ts`.
-They do not depend on tokenizer or model internals.
+Defined in `packages/core/src/future-proof-metrics.ts`, these abstractions survive technology shifts.
 
 ### 1. Cognitive Load (`CognitiveLoad`)
+Quantifies the mental effort required to process a file. High load blocks AI comprehension.
+- **Factors:** Size, Interface, Dependency, and Conceptual Density.
 
-Replaces "token cost" with multi-dimensional cognitive assessment.
+### 2. AI Signal Clarity (`AiSignalClarity`)
+Measures the clarity of "signals" sent to the AI. Low clarity leads to hallucinations.
+- **Signals:** Explicit vs Implicit intent, Symbol ambiguity, JSDoc coverage.
 
-```typescript
-import { calculateCognitiveLoad } from '@aiready/core';
+### 3. Agent Grounding Score (`AgentGroundingScore`)
+Measures "wayfinding" efficiency for agents.
+- **Dimensions:** Directory depth, entry-point clarity, domain vocabulary consistency.
 
-const load = calculateCognitiveLoad({
-  linesOfCode: 500,
-  exportCount: 10,
-  importCount: 15,
-  uniqueConcepts: 20,
-  cyclomaticComplexity: 8,
-});
-// { score: 45, rating: 'moderate', factors: [...] }
-```
+### 4. Testability Index (`TestabilityIndex`)
+Measures verification safety. `Blind-risk` indicates AI changes cannot be verified.
+- **Dimensions:** Test-to-source ratio, purity of functions, dependency injection patterns.
 
-**Factors:** Size Complexity (30%) · Interface Complexity (25%) · Dependency Complexity (25%) · Conceptual Density (20%)
+### 5. Documentation Drift (`DocDriftScore`)
+Measures the gap between code reality and narrative documentation.
 
----
+### 6. Dependency Health (`DependencyHealthScore`)
+Measures the risk profile of the import graph.
 
-### 2. Hallucination Risk (`HallucinationRisk`) — NEW in v0.12
+### 7. Pattern Entropy (`PatternEntropy`)
+A mathematical measure of structural consistency within a domain.
 
-Measures code patterns empirically known to cause AI models to generate **confidently wrong** output.
+### 8. Concept Cohesion (`ConceptCohesion`)
+Measures how well a module sticks to a single responsibility/domain.
 
-```typescript
-import { calculateHallucinationRisk } from '@aiready/core';
-
-const risk = calculateHallucinationRisk({
-  overloadedSymbols: 5, // Same name, different signatures
-  magicLiterals: 12, // Unnamed constants: 3000, "admin", true
-  booleanTraps: 3, // foo(true, false, null) patterns
-  implicitSideEffects: 4, // Functions that mutate without returning
-  deepCallbacks: 2, // Callback nesting > 3 levels
-  ambiguousNames: 8, // x, tmp, data, obj, misc
-  undocumentedExports: 15, // Public functions without JSDoc
-  totalSymbols: 200,
-  totalExports: 40,
-});
-// { score: 32, rating: 'moderate', topRisk: '...', signals: [...] }
-```
-
-**Signals and weights:**
-
-- Symbol Overloading (25%) — AI picks wrong signature
-- Magic Literals (20%) — AI invents wrong values
-- Boolean Traps (20%) — AI inverts intent
-- Implicit Side Effects (15%) — AI misses contracts
-- Callback Nesting (10%) — AI loses control flow
-- Ambiguous Names (10%) — AI guesses wrong intent
-- Undocumented Exports (10%) — AI fabricates behavior
-
----
-
-### 3. Agent Grounding Score (`AgentGroundingScore`) — NEW in v0.12
-
-Measures how well an AI **agent** can navigate the codebase without human prompting.
-
-```typescript
-import { calculateAgentGrounding } from '@aiready/core';
-
-const grounding = calculateAgentGrounding({
-  deepDirectories: 3, // Directories > 4 levels deep
-  totalDirectories: 30,
-  vagueFileNames: 5, // utils.ts, helpers.ts, misc.ts
-  totalFiles: 120,
-  hasRootReadme: true,
-  readmeIsFresh: true, // Updated in last 90 days
-  barrelExports: 8, // index.ts re-exports
-  untypedExports: 2,
-  totalExports: 45,
-  inconsistentDomainTerms: 1,
-  domainVocabularySize: 20,
-});
-// { score: 82, rating: 'good', dimensions: {...}, recommendations: [...] }
-```
-
-**Dimensions:**
-
-- Structure Clarity (20%) — Directory depth and organization
-- Self-Documentation (25%) — File names reveal purpose
-- Entry Points (20%) — README and barrel export quality
-- API Clarity (15%) — Typed, discoverable public surface
-- Domain Consistency (20%) — One term per concept
-
----
-
-### 4. Testability Index (`TestabilityIndex`) — NEW in v0.12
-
-Measures whether AI-generated changes can be **safely verified**.
-
-```typescript
-import { calculateTestabilityIndex } from '@aiready/core';
-
-const testability = calculateTestabilityIndex({
-  testFiles: 35, // *.test.ts, *.spec.ts, __tests__/*
-  sourceFiles: 80,
-  pureFunctions: 60, // No I/O or mutations
-  totalFunctions: 100,
-  injectionPatterns: 15, // Constructor DI, factory patterns
-  totalClasses: 20,
-  bloatedInterfaces: 2, // Interfaces with > 10 methods
-  totalInterfaces: 25,
-  externalStateMutations: 5,
-  hasTestFramework: true,
-});
-// { score: 76, rating: 'good', aiChangeSafetyRating: 'safe', dimensions: {...} }
-```
-
-**`aiChangeSafetyRating`:** `safe` | `moderate-risk` | `high-risk` | `blind-risk`
-
-Teams with `blind-risk` should treat AI suggestions as **untested code** regardless of score.
+### 9. Semantic Distance (`SemanticDistance`)
+Measures concept drift across the codebase using terminology analysis.
 
 ---
 

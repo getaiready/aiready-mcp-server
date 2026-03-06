@@ -16,6 +16,7 @@
 **Features:**
 
 - Full open-source CLI tools (pattern-detect, context-analyzer, consistency)
+- **9 Core AI-Readiness Metrics** (Cognitive Load, AI Signal, Grounding, etc.)
 - Local visualization
 - JSON/HTML export
 - GitHub OAuth signup

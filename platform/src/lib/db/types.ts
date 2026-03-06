@@ -49,6 +49,7 @@ export interface Repository {
   aiScore?: number;
   isScanning?: boolean;
   lastError?: string;
+  lastCommitHash?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -59,16 +60,22 @@ export interface Analysis {
   userId: string;
   timestamp: string;
   aiScore: number;
+  status: 'processing' | 'completed' | 'failed';
   breakdown: {
-    semanticDuplicates: number;
-    contextFragmentation: number;
-    namingConsistency: number;
-    documentationHealth: number;
-    dependencyHealth: number;
-    aiSignalClarity: number;
-    agentGrounding: number;
-    testabilityIndex: number;
-    changeAmplification: number;
+    semanticDuplicates?: number;
+    contextFragmentation?: number;
+    namingConsistency?: number;
+    documentationHealth?: number;
+    dependencyHealth?: number;
+    aiSignalClarity?: number;
+    agentGrounding?: number;
+    testabilityIndex?: number;
+    changeAmplification?: number;
+    cognitiveLoad?: number;
+    patternEntropy?: number;
+    conceptCohesion?: number;
+    docDrift?: number;
+    semanticDistance?: number;
   };
   rawKey: string;
   summary: {
@@ -78,6 +85,7 @@ export interface Analysis {
     warnings: number;
   };
   details?: any[];
+  error?: string;
   createdAt: string;
 }
 

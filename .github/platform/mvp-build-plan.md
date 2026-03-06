@@ -64,7 +64,8 @@
 
 - [x] Limits banner showing repos and runs remaining
 - [x] Free plan label with upgrade link
-- [ ] Score breakdown pie chart (deferred)
+- [ ] Score breakdown charts for all **9 Core Metrics**:
+    - Cognitive Load, AI Signal, Grounding, Entropy, Cohesion, Testability, Doc Drift, Dependency Health, Semantic Distance.
 - [ ] Tool scores bar chart (deferred)
 
 ### Priority 2B: Email Notifications
@@ -74,6 +75,8 @@
 - [x] Include score summary in email
 - [x] Link to dashboard
 - [x] Welcome email template
+- [x] **Waitlist signup notification** (SES)
+- [x] **Feedback submission notification** (SES)
 
 ### Priority 2C: Error Handling
 
@@ -82,12 +85,15 @@
 - [x] Loading state component (loading.tsx)
 - [ ] Retry logic for transient failures (deferred)
 
-### Priority 2D: Onboarding Flow
+### Priority 2D: Onboarding & Support
 
 - [x] Onboarding component with step-by-step guide
 - [x] Welcome message for new users
 - [x] "Run your first analysis" guide
 - [x] CLI command examples in onboarding
+- [x] **Contact Us page** (/contact)
+- [x] **Floating Feedback Widget** (global)
+- [x] **Waitlist Modal** (Pricing page)
 
 ---
 
@@ -125,4 +131,4 @@ To enable: Set `MVP_FREE_ONLY = false` in `platform/src/lib/plans.ts`
 
 ---
 
-_Last updated: 2026-02-22_
+_Last updated: 2026-03-06_

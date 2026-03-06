@@ -11,11 +11,30 @@ import {
 import { planLimits, MVP_FREE_ONLY } from '@/lib/plans';
 import { randomUUID } from 'crypto';
 
+import { validateApiKey } from '@/lib/db';
+
 // GET /api/repos - List repositories
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    let userId: string | undefined;
+
+    // 1. Check for API key (Authorization: Bearer <key>)
+    const authHeader = request.headers.get('Authorization');
+    if (authHeader?.startsWith('Bearer ')) {
+      const apiKey = authHeader.substring(7);
+      const validation = await validateApiKey(apiKey);
+      if (validation) {
+        userId = validation.userId;
+      }
+    }
+
+    // 2. Fallback to session
+    if (!userId) {
+      const session = await auth();
+      userId = session?.user?.id;
+    }
+
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -27,7 +46,7 @@ export async function GET(request: NextRequest) {
       // TODO: Verify user is a member of the team
       repos = await listTeamRepositories(teamId);
     } else {
-      repos = await listUserRepositories(session.user.id);
+      repos = await listUserRepositories(userId);
     }
 
     // Attach latest analysis to each repo

@@ -22,6 +22,7 @@
 - [x] Add MVP_FREE_ONLY flag for easy toggle
 - [x] Update plan comparison table
 - [x] Plan-gating middleware with "coming soon" messages
+- [x] **Waitlist signup mechanism** (Modal + API + SES)
 - [ ] Create Stripe products/prices (deferred until paid tier launch)
 - [ ] Set MVP_FREE_ONLY = false when ready for paid tiers
 
@@ -30,55 +31,47 @@
 - [x] Create SST project in `platform/` (see [data-model.md](./data-model.md) for full SST definition)
 - [x] Provision DynamoDB single table (`aiready-platform`) with GSI1, GSI2, TTL
 - [x] Provision S3 bucket for raw analysis JSON
+- [x] **SES notification system for waitlist/feedback**
 - [ ] Set up EventBridge bus + SQS queues (for async processing)
 - [ ] Configure CloudWatch monitoring + Sentry
-- [x] Set Lambda reserved concurrency (50 dev, 100 prod) for Enterprise scale
 
-### Auth
+### Growth & Support
 
-- [x] Implement GitHub OAuth with NextAuth.js (see [auth.md](./auth.md))
-- [x] JWT issuance + refresh (via NextAuth v5)
-- [x] Plan-gating middleware (`withAuth`) — with plan enforcement
-
-### Analysis Pipeline
-
-- [x] `POST /analysis/upload` API route — validate, store in S3, write DDB run record
-- [ ] Processing Lambda — extract metrics, compute trends, write daily metric records
-- [ ] `GET /repos/:repoId/runs` + `GET /runs/:runId` endpoints
-
-### Dashboard UI
-
-- [x] Basic repo list page (connect to teams + repos APIs)
-- [x] Run history list per repo
-- [x] Single run detail view (JSON summary, file breakdown)
+- [x] **Contact Us page** (/contact)
+- [x] **Floating Feedback Widget** (global)
+- [ ] Onboard beta users
+- [ ] Email notifications for analysis completion (in progress)
 
 ---
 
 ## Short-term — Months 2–3
 
-### Metrics & Trends
+### Metrics & Trends (Next Priority)
 
-- [ ] Historical trend charts (query DDB `METRIC#<tool>#<date>` range)
-- [ ] `GET /repos/:repoId/metrics` endpoint with tool + date range filters
-- [ ] Chart components using D3.js / Chart.js (see [ui-wireframes.md](./ui-wireframes.md))
+- [ ] Historical trend charts for all **9 core metrics**:
+    1. **Cognitive Load** — Complexity of code for AI/human comprehension.
+    2. **AI Signal Clarity** — Clarity of intent and domain concepts.
+    3. **Agent Grounding** — Ability for agents to link code to requirements.
+    4. **Pattern Entropy** — Consistency of implementation patterns.
+    5. **Concept Cohesion** — Logical grouping of related functionality.
+    6. **Testability Index** — Ease of automated verification.
+    7. **Documentation Drift** — Alignment between code and docs.
+    8. **Dependency Health** — Fragility and fragmentation of imports.
+    9. **Semantic Distance** — Consistency of terminology across the codebase.
+- [ ] `GET /repos/:repoId/metrics` endpoint with tool + date range filters.
+- [ ] Chart components using D3.js (reusing logic from `@aiready/visualizer`).
 
-### Recommendations
+### Async Pipeline
 
-- [ ] Recommendation generation Lambda (fires after metrics computed)
-- [ ] `GET /repos/:repoId/recommendations` + `PATCH /recommendations/:recId` endpoints
-- [ ] Recommendation list UI with severity filtering
+- [ ] EventBridge bus for "Analysis Uploaded" events
+- [ ] SQS queue for reliable processing
+- [ ] Processing Lambda — extract metrics, compute trends, write daily metric records
 
-### Billing
+### Billing Preparation
 
 - [ ] Stripe integration: subscription creation, webhook handler, portal link
 - [ ] Plan enforcement in Lambda middleware (Free tier limits)
 - [ ] Upgrade prompts in dashboard for locked features
-
-### Growth
-
-- [ ] Beta user onboarding flow
-- [ ] Email notifications via Resend / SES
-- [ ] `@aiready/visualizer` ship (✅ done)
 
 ---
 

@@ -65,11 +65,19 @@ See [agents/README.md](./agents/README.md) for agent implementation detail.
 
 ### 1. Detection Agents — ✅ Built (OSS packages)
 
-| Agent            | Package                     | Detects                            |
-| ---------------- | --------------------------- | ---------------------------------- |
-| Pattern-Detect   | `@aiready/pattern-detect`   | Semantic duplicates                |
-| Context-Analyzer | `@aiready/context-analyzer` | Import chains, context budget      |
-| Consistency      | `@aiready/consistency`      | Naming and pattern inconsistencies |
+The platform evaluates code using **9 Core AI-Readiness Metrics**:
+
+| Metric                  | Category   | Focus                                         |
+| ----------------------- | ---------- | --------------------------------------------- |
+| **Cognitive Load**      | Complexity | Human/AI comprehension ease                   |
+| **AI Signal Clarity**   | Semantics  | Clarity of intent and domain concepts         |
+| **Agent Grounding**     | Context    | Traceability from code to requirements        |
+| **Pattern Entropy**     | Structural | Consistency of implementation patterns        |
+| **Concept Cohesion**    | Structural | Logical grouping of related functionality     |
+| **Testability Index**   | Quality    | Ease of automated verification                |
+| **Documentation Drift** | Context    | Alignment between code and documentation      |
+| **Dependency Health**   | Structural | Fragility and fragmentation of imports        |
+| **Semantic Distance**   | Semantics  | Consistency of terminology across the project |
 
 ### 2. Analysis Agents — Phase 2a
 
@@ -174,25 +182,39 @@ interface RemediationRisk {
 
 ---
 
+## Agentic Tech Stack
+
+- **Framework:** [Mastra](https://mastra.ai/) — For building agentic workflows, memory, and tool integration.
+- **Runtime:** AWS Lambda + SQS (async remediation batches).
+- **Storage:** DynamoDB (remediation state + risk logs) + S3 (code diffs).
+- **LLMs:** Claude 3.5 Sonnet (for complex refactoring), GPT-4o (for validation).
+
+---
+
 ## Phase 2 Go-to-Market
 
-### Months 1–2: MVP Agentic Platform
+### Months 1–2: MVP Agentic Platform (Current Focus)
 
-- [ ] Build remediation agents (consolidate, rename, restructure)
-- [ ] Implement human review queue UI
-- [ ] Create risk classification system
-- [ ] Auto-PR creation for approved fixes
+- [ ] **Mastra Integration:** Set up the agentic framework in `packages/agents`.
+- [ ] Build remediation agents (consolidate, rename, restructure) using Mastra workflows.
+- [ ] Implement human review queue UI in the platform dashboard.
+- [ ] Create risk classification system for auto-approval.
+- [ ] Auto-PR creation for approved fixes.
 
 ### Months 3–4: Expert Network Launch
 
-- [ ] Recruit 3–5 AI engineering consultants
-- [ ] Build consultant dashboard
-- [ ] Implement billing/time tracking
-- [ ] Launch "AI Code Health Check" service ($499 one-time)
+- [ ] Recruit 3–5 AI engineering consultants.
+- [ ] Build consultant dashboard for oversight.
+- [ ] Implement billing/time tracking for expert reviews.
+- [ ] Launch "AI Code Health Check" service ($499 one-time).
 
 ### Months 5–6: Enterprise Features
 
-- [ ] Custom remediation policies
-- [ ] Jira/Linear integration
-- [ ] Slack/Teams notifications
-- [ ] White-label reports
+- [ ] Custom remediation policies.
+- [ ] Jira/Linear integration.
+- [ ] Slack/Teams notifications.
+- [ ] White-label reports.
+
+---
+
+_Last updated: 2026-03-06_

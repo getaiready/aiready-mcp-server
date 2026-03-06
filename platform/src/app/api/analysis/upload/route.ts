@@ -43,6 +43,8 @@ async function getRunsThisMonth(userId: string): Promise<number> {
   return totalRuns;
 }
 
+import { Resource } from 'sst';
+
 // POST /api/analysis/upload - Upload analysis results
 export async function POST(request: NextRequest) {
   try {
@@ -164,45 +166,47 @@ export async function POST(request: NextRequest) {
       data,
     });
 
-    // Calculate AI score
-    const aiScore = data.summary?.aiReadinessScore || calculateAiScore(data);
-
-    // Create analysis record in DynamoDB
+    // Create analysis record in DynamoDB (Initial state: processing)
     const analysis = await createAnalysis({
       id: analysisId,
       repoId: targetRepoId,
       userId,
       timestamp,
-      aiScore,
-      breakdown: extractBreakdown(data),
+      aiScore: 0, // Will be updated by worker
+      breakdown: {}, // Will be updated by worker
       rawKey,
       summary: extractSummary(data),
+      status: 'processing', // Add status field
       createdAt: new Date().toISOString(),
     });
+
+    // 6. Push to SQS Queue for async processing (metrics, score, email)
+    const { SQSClient, SendMessageCommand } =
+      await import('@aws-sdk/client-sqs');
+    const sqs = new SQSClient({});
+
+    await sqs.send(
+      new SendMessageCommand({
+        QueueUrl: (Resource as any).AnalysisQueue.url,
+        MessageBody: JSON.stringify({
+          detail: {
+            analysisId,
+            repoId: targetRepoId,
+            userId,
+            rawKey,
+            timestamp,
+          },
+        }),
+      })
+    );
 
     // Calculate remaining runs
     const remainingRuns = maxRunsPerMonth - runsThisMonth - 1;
 
-    // Send email notification
-    getUser(userId).then((user) => {
-      if (user?.email) {
-        const baseUrl =
-          process.env.NEXT_PUBLIC_APP_URL || 'https://platform.getaiready.dev';
-        sendAnalysisCompleteEmail({
-          to: user.email!,
-          repoName: repo.name,
-          aiScore,
-          breakdown: analysis.breakdown,
-          summary: analysis.summary,
-          dashboardUrl: `${baseUrl}/dashboard?repo=${targetRepoId}`,
-        }).catch((err) => console.error('Failed to send analysis email:', err));
-      }
-    });
-
     return NextResponse.json(
       {
         analysis,
-        message: 'Analysis uploaded successfully',
+        message: 'Analysis uploaded. Processing metrics...',
         limits: {
           runsRemaining: remainingRuns,
           maxRunsPerMonth,
@@ -221,6 +225,10 @@ export async function POST(request: NextRequest) {
       {
         error: 'Failed to upload analysis',
         details: error instanceof Error ? error.message : 'Unknown error',
+        availableResources: Object.keys(Resource),
+        sstEnvVars: Object.keys(process.env).filter((k) =>
+          k.startsWith('SST_')
+        ),
       },
       { status: 500 }
     );

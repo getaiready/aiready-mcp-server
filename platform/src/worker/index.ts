@@ -53,6 +53,26 @@ export async function handler(event: SQSEvent) {
         onAuth: () => ({ username: accessToken || '', password: '' }),
       });
 
+      // Get current commit hash
+      const currentCommit = await git.resolveRef({
+        fs,
+        dir: tempDir,
+        ref: 'HEAD',
+      });
+
+      console.log(
+        `[ScanWorker] Current commit: ${currentCommit}. Last scanned: ${repo.lastCommitHash}`
+      );
+
+      if (repo.lastCommitHash === currentCommit) {
+        console.log(
+          `[ScanWorker] No changes detected for repo ${repoId}. Skipping scan.`
+        );
+        // Just clear the scanning flag
+        await setRepositoryScanning(repoId, false);
+        return;
+      }
+
       console.log(`[ScanWorker] Running AIReady analysis...`);
 
       // Dynamic import of CLI to avoid loading it if not needed
@@ -122,11 +142,26 @@ export async function handler(event: SQSEvent) {
         breakdown: extractBreakdown(data),
         rawKey,
         summary: extractSummary(data),
+        status: 'completed',
         createdAt: new Date().toISOString(),
       });
 
+      // Save time-series metrics for historical trending
+      await (async () => {
+        const { saveMetricPoints } = await import('../lib/db/analysis');
+        await saveMetricPoints({
+          repoId,
+          timestamp,
+          metrics: {
+            aiReadinessScore: aiScore,
+            ...extractBreakdown(data),
+          },
+          runId: analysisId,
+        });
+      })();
+
       // Update repository score and clear scanning status
-      await updateRepositoryScore(repoId, aiScore);
+      await updateRepositoryScore(repoId, aiScore, currentCommit);
 
       console.log(
         `[ScanWorker] Successfully completed analysis ${analysisId} for repo ${repoId}`

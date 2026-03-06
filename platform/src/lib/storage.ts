@@ -102,6 +102,26 @@ export interface AnalysisData {
       score: number;
       issues: any[];
     };
+    cognitiveLoad?: {
+      score: number;
+      factors: any[];
+    };
+    patternEntropy?: {
+      score: number;
+      recommendations: string[];
+    };
+    conceptCohesion?: {
+      score: number;
+      analysis: any;
+    };
+    docDrift?: {
+      score: number;
+      issues: any[];
+    };
+    semanticDistance?: {
+      score: number;
+      relationship: string;
+    };
   };
   rawOutput?: unknown;
 }
@@ -271,6 +291,11 @@ export function extractBreakdown(data: AnalysisData) {
     agentGrounding: b.agentGrounding?.score || 0,
     testabilityIndex: b.testabilityIndex?.score || 0,
     changeAmplification: b.changeAmplification?.score || 0,
+    cognitiveLoad: b.cognitiveLoad?.score || 0,
+    patternEntropy: b.patternEntropy?.score || 0,
+    conceptCohesion: b.conceptCohesion?.score || 0,
+    docDrift: b.docDrift?.score || 0,
+    semanticDistance: b.semanticDistance?.score || 0,
   };
 }
 

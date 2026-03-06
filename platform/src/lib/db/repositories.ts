@@ -87,7 +87,8 @@ export async function deleteRepository(repoId: string): Promise<void> {
 
 export async function updateRepositoryScore(
   repoId: string,
-  score: number
+  score: number,
+  lastCommitHash?: string
 ): Promise<void> {
   const TABLE_NAME = getTableName();
   await doc.send(
@@ -95,11 +96,12 @@ export async function updateRepositoryScore(
       TableName: TABLE_NAME,
       Key: { PK: `REPO#${repoId}`, SK: '#METADATA' },
       UpdateExpression:
-        'SET aiScore = :s, lastAnalysisAt = :t, updatedAt = :t, isScanning = :f',
+        'SET aiScore = :s, lastAnalysisAt = :t, updatedAt = :t, isScanning = :f, lastCommitHash = :h',
       ExpressionAttributeValues: {
         ':s': score,
         ':t': new Date().toISOString(),
         ':f': false,
+        ':h': lastCommitHash || null,
       },
     })
   );
