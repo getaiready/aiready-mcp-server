@@ -12,6 +12,7 @@ import {
 } from '@/components/Icons';
 import type { AIReadyConfig } from '@aiready/core';
 import { ToolName } from '@aiready/core/client';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 interface Props {
   repoId: string;
@@ -20,6 +21,17 @@ interface Props {
 }
 
 export function ScanConfigForm({ repoId, initialSettings, onSave }: Props) {
+  const [confirmData, setConfirmData] = useState<{
+    type: 'node_modules' | 'approx' | null;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    type: null,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+  });
   const defaultSettings: AIReadyConfig = useMemo(
     () => ({
       scan: {
@@ -411,24 +423,48 @@ export function ScanConfigForm({ repoId, initialSettings, onSave }: Props) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800/50">
               <div
-                onClick={() =>
-                  setSettings({
-                    ...settings,
-                    tools: {
-                      ...settings.tools,
-                      [ToolName.PatternDetect]: {
-                        ...settings.tools?.[ToolName.PatternDetect],
-                        approx:
-                          settings.tools?.[ToolName.PatternDetect]?.approx !==
-                          false,
+                onClick={() => {
+                  const current =
+                    settings.tools?.[ToolName.PatternDetect]?.approx !== false;
+                  const newVal = !current;
+
+                  if (newVal) {
+                    setConfirmData({
+                      type: 'approx',
+                      title: 'Enable Approximate Matching?',
+                      message:
+                        'Approximate matching uses fuzzy hashing to find logic clones with naming variations. This significantly increases memory usage and scan time for large repositories.',
+                      onConfirm: () => {
+                        setSettings({
+                          ...settings,
+                          tools: {
+                            ...settings.tools,
+                            [ToolName.PatternDetect]: {
+                              ...settings.tools?.[ToolName.PatternDetect],
+                              approx: true,
+                            },
+                          },
+                        });
+                        setConfirmData((prev) => ({ ...prev, type: null }));
                       },
-                    },
-                  })
-                }
+                    });
+                  } else {
+                    setSettings({
+                      ...settings,
+                      tools: {
+                        ...settings.tools,
+                        [ToolName.PatternDetect]: {
+                          ...settings.tools?.[ToolName.PatternDetect],
+                          approx: false,
+                        },
+                      },
+                    });
+                  }
+                }}
                 className={`group relative p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   settings.tools?.[ToolName.PatternDetect]?.approx !== false
                     ? 'bg-amber-500/10 border-amber-500/30 text-amber-500'
-                    : 'bg-slate-900 border-slate-800 text-slate-500'
+                    : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-slate-700'
                 }`}
               >
                 <span className="text-[10px] font-bold uppercase">
@@ -666,24 +702,38 @@ export function ScanConfigForm({ repoId, initialSettings, onSave }: Props) {
                     const newVal =
                       !settings.tools?.[ToolName.ContextAnalyzer]
                         ?.includeNodeModules;
-                    if (
-                      newVal &&
-                      !confirm(
-                        'WARNING: Scanning node_modules will exponentially increase scan time, cost, and context window usage. This is rarely needed for standard analysis. Are you sure you want to enable this?'
-                      )
-                    ) {
-                      return;
-                    }
-                    setSettings({
-                      ...settings,
-                      tools: {
-                        ...settings.tools,
-                        [ToolName.ContextAnalyzer]: {
-                          ...settings.tools?.[ToolName.ContextAnalyzer],
-                          includeNodeModules: newVal,
+                    if (newVal) {
+                      setConfirmData({
+                        type: 'node_modules',
+                        title: 'Scan Node Modules?',
+                        message:
+                          'WARNING: Scanning node_modules will exponentially increase scan time, cost, and context window usage. This is rarely needed for standard analysis.',
+                        onConfirm: () => {
+                          setSettings({
+                            ...settings,
+                            tools: {
+                              ...settings.tools,
+                              [ToolName.ContextAnalyzer]: {
+                                ...settings.tools?.[ToolName.ContextAnalyzer],
+                                includeNodeModules: true,
+                              },
+                            },
+                          });
+                          setConfirmData((prev) => ({ ...prev, type: null }));
                         },
-                      },
-                    });
+                      });
+                    } else {
+                      setSettings({
+                        ...settings,
+                        tools: {
+                          ...settings.tools,
+                          [ToolName.ContextAnalyzer]: {
+                            ...settings.tools?.[ToolName.ContextAnalyzer],
+                            includeNodeModules: false,
+                          },
+                        },
+                      });
+                    }
                   }}
                   className={`group relative p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                     settings.tools?.[ToolName.ContextAnalyzer]
@@ -1189,6 +1239,16 @@ export function ScanConfigForm({ repoId, initialSettings, onSave }: Props) {
           )}
         </button>
       </div>
+
+      <ConfirmationModal
+        isOpen={confirmData.type !== null}
+        onClose={() => setConfirmData((prev) => ({ ...prev, type: null }))}
+        onConfirm={confirmData.onConfirm}
+        title={confirmData.title}
+        message={confirmData.message}
+        variant={confirmData.type === 'node_modules' ? 'danger' : 'warning'}
+        confirmText="Enable Anyway"
+      />
     </div>
   );
 }
