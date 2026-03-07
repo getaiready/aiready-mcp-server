@@ -150,11 +150,14 @@ export function ScanConfigForm({
   const estimatedTime = useMemo(() => {
     if (fileCount === 0) return null;
 
-    let seconds = 20; // Base overhead (clone + init + container warm-up)
+    // Use a floor for estimation to show meaningful changes even on small repos
+    const estFileCount = Math.max(fileCount, 80);
+
+    let seconds = 30; // Increased base overhead (provisioning, cloning, setup)
     const activeTools = settings.scan?.tools || [];
 
-    // 1. Core file scanning & parsing (0.1s per file - includes I/O and AST generation)
-    seconds += fileCount * 0.1;
+    // 1. Core file scanning & parsing (0.15s per file)
+    seconds += estFileCount * 0.15;
 
     // 2. Pattern Detection (The most expensive O(N^2) tool)
     if (activeTools.includes(ToolName.PatternDetect)) {
@@ -165,56 +168,47 @@ export function ScanConfigForm({
       const minTokens = toolCfg?.minSharedTokens || 10;
       const maxCandidates = toolCfg?.maxCandidatesPerBlock || 100;
 
-      // minLines impact: number of blocks scales inversely with minLines
-      // More aggressive scaling for visible feedback: 8 blocks per file base
-      const blocksPerFile = 8 * (5 / minLines);
-      const blocks = fileCount * blocksPerFile;
+      // Base block count
+      const blocksPerFile = 6 * (5 / minLines);
+      const blocks = estFileCount * blocksPerFile;
       const totalComparisons = (blocks * blocks) / 2;
 
-      let effectiveComparisons = totalComparisons;
-
       if (approx) {
-        // Approximate mode uses hashing/indexing.
-        // More tokens = more specific index = more pruning
-        const tokenPruningFactor = Math.min(0.98, 0.7 + minTokens * 0.02);
-        effectiveComparisons = totalComparisons * (1 - tokenPruningFactor);
+        // Approximate mode
+        // 1. Candidate selection cost (O(N) with indexing)
+        seconds += blocks * 0.005;
 
-        // maxCandidates limits the final verification step
-        // We add a floor to ensure maxCandidates still shows impact
-        effectiveComparisons = Math.min(
-          effectiveComparisons,
-          blocks * maxCandidates
-        );
+        // 2. Verification cost (O(blocks * maxCandidates))
+        // minTokens affects index specificity
+        const verificationWork =
+          blocks * maxCandidates * (1.5 - minTokens / 20);
+        seconds += verificationWork / 10000;
       } else {
-        // Exhaustive mode: pair-wise comparison of ALL blocks
-        // Higher minSimilarity allows some early exits but work is still O(N^2)
-        const similarityPruningFactor = Math.max(0.05, minSimilarity / 4);
-        effectiveComparisons =
-          totalComparisons * (1.05 - similarityPruningFactor);
+        // Exhaustive mode (Very expensive)
+        // 1. Pairwise comparison cost
+        // minSimilarity allows some early exit, but the search space is still full N^2
+        const pruningEffect = 1.1 - minSimilarity;
+        const comparisonWork = totalComparisons * pruningEffect;
 
-        // maxCandidates significantly impacts verification depth
-        // Scale comparison cost by maxCandidates to show impact
-        const workPerComparison = 1 + maxCandidates / 50;
-        effectiveComparisons = effectiveComparisons * workPerComparison;
+        // maxCandidates affects the depth of the Jaccard comparison
+        const workFactor = 1 + maxCandidates / 20;
+        seconds += (comparisonWork * workFactor) / 15000;
       }
-
-      // ~20,000 deep comparisons per second on Lambda
-      seconds += effectiveComparisons / 20000;
     }
 
     // 3. Context Analyzer (Recursive exploration)
     if (activeTools.includes(ToolName.ContextAnalyzer)) {
       const depth = settings.tools?.[ToolName.ContextAnalyzer]?.maxDepth || 5;
       // Exponential increase with depth
-      const depthFactor = Math.pow(1.5, depth - 5);
-      seconds += fileCount * 0.15 * depthFactor;
+      const depthFactor = Math.pow(1.6, depth - 5);
+      seconds += estFileCount * 0.25 * depthFactor;
     }
 
     // 4. Other tools (Generally O(N))
     const otherToolsCount = activeTools.filter(
       (t) => t !== ToolName.PatternDetect && t !== ToolName.ContextAnalyzer
     ).length;
-    seconds += fileCount * 0.05 * otherToolsCount;
+    seconds += estFileCount * 0.08 * otherToolsCount;
 
     return Math.round(seconds);
   }, [settings, fileCount]);
