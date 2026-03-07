@@ -174,23 +174,43 @@ export interface ScanOptions {
 }
 
 /**
- * Global options that should not be repeated in tool-specific audit logs
+ * Global infrastructure options that apply to the whole scan process.
+ * These are passed to all tools but usually omitted from tool-specific audit logs
+ * to avoid redundancy.
  */
-export const GLOBAL_SCAN_OPTIONS = [
-  'rootDir',
-  'tools',
-  'toolConfigs',
+export const GLOBAL_INFRA_OPTIONS = [
+  'rootDir', // Essential for every tool
   'include',
   'exclude',
   'onProgress',
   'progressCallback',
   'includeTests',
   'useSmartDefaults',
-  'maxDepth',
   'streamResults',
   'batchSize',
   'costConfig',
+  'tools',
+  'toolConfigs',
 ];
+
+/**
+ * Common fine-tuning options that might be passed globally but are actually tool-specific.
+ */
+export const COMMON_FINE_TUNING_OPTIONS = [
+  'maxDepth',
+  'minSimilarity',
+  'minLines',
+  'minCohesion',
+  // AI Signal Clarity options
+  'checkMagicLiterals',
+  'checkBooleanTraps',
+  'checkAmbiguousNames',
+  'checkUndocumentedExports',
+  'checkImplicitSideEffects',
+  'checkDeepCallbacks',
+];
+
+export const GLOBAL_SCAN_OPTIONS = [...GLOBAL_INFRA_OPTIONS];
 
 export interface AIReadyConfig {
   // Global scan options

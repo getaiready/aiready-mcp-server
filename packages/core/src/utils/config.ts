@@ -43,7 +43,7 @@ export async function loadConfig(
           }
 
           return config;
-          } catch (error) {
+        } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : String(error);
           const e = new Error(
@@ -84,15 +84,12 @@ export function mergeConfigWithDefaults(
     if (userConfig.scan.exclude) result.exclude = userConfig.scan.exclude;
   }
 
-  // Merge tool-specific options
-  if (userConfig.tools) {
-    for (const [toolName, toolConfig] of Object.entries(userConfig.tools)) {
+  // Merge tool-specific options (support both 'tools' and 'toolConfigs' for backward compatibility)
+  const toolOverrides = userConfig.tools || (userConfig as any).toolConfigs;
+  if (toolOverrides) {
+    for (const [toolName, toolConfig] of Object.entries(toolOverrides)) {
       if (typeof toolConfig === 'object' && toolConfig !== null) {
-        // For pattern-detect and context-analyzer tools, merge options directly into result
-        if (toolName === 'pattern-detect' || toolName === 'context-analyzer') {
-          Object.assign(result, toolConfig);
-        }
-        // Add other tool configs under their names for future use
+        // Add tool configs under their names
         result[toolName] = { ...result[toolName], ...toolConfig };
       }
     }
