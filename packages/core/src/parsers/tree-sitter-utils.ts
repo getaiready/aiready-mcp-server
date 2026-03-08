@@ -32,12 +32,11 @@ function findInPnpmStore(
   fileName: string,
   depth: number = 0
 ): string | null {
-  if (depth > 5) return null;
+  if (depth > 8) return null;
 
   const pnpmDir = path.join(startDir, 'node_modules', '.pnpm');
   if (fs.existsSync(pnpmDir)) {
     // We found a .pnpm store, let's look for our file anywhere inside it
-    // This is expensive but only happens once per language
     return findFileRecursively(pnpmDir, fileName, 0);
   }
 
@@ -51,7 +50,7 @@ function findFileRecursively(
   fileName: string,
   depth: number
 ): string | null {
-  if (depth > 4) return null; // Don't go too deep
+  if (depth > 6) return null; // Increased depth for pnpm structure
 
   try {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -59,15 +58,7 @@ function findFileRecursively(
     // Look for exact match in this dir first
     for (const entry of entries) {
       if (entry.isFile() && entry.name === fileName) {
-        // Verification: ensure it's in a path that looks like a treesitter or wasm dir
-        const fullPath = path.join(dir, entry.name);
-        if (
-          fullPath.includes('tree-sitter') ||
-          fullPath.includes('wasm') ||
-          fullPath.includes('artifacts')
-        ) {
-          return fullPath;
-        }
+        return path.join(dir, entry.name);
       }
     }
 
@@ -83,7 +74,7 @@ function findFileRecursively(
       }
     }
   } catch (err) {
-    // Ignore permission errors etc
+    // Ignore errors
   }
 
   return null;
