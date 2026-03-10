@@ -16,17 +16,19 @@ describe('AI Signal Clarity Scoring', () => {
     },
     results: [],
     aggregateSignals: {
-      magicLiterals: 60,
+      magicLiterals: 80,
       booleanTraps: 2,
       ambiguousNames: 1,
       undocumentedExports: 3,
       implicitSideEffects: 0,
       deepCallbacks: 0,
       overloadedSymbols: 0,
+      largeFiles: 0,
       totalSymbols: 100,
       totalExports: 20,
+      totalLines: 1000,
     },
-    recommendations: ['Extract 60 magic literals into named constants'],
+    recommendations: ['Extract 80 magic literals into named constants'],
   };
 
   it('should map report to ToolScoringOutput correctly', () => {
@@ -37,7 +39,7 @@ describe('AI Signal Clarity Scoring', () => {
     expect(scoring.score).toBeGreaterThanOrEqual(0);
     expect(scoring.factors.length).toBeGreaterThan(0);
     expect(scoring.recommendations[0].action).toBe(
-      'Extract 60 magic literals into named constants'
+      'Extract 80 magic literals into named constants'
     );
   });
 
@@ -52,8 +54,10 @@ describe('AI Signal Clarity Scoring', () => {
         implicitSideEffects: 0,
         deepCallbacks: 0,
         overloadedSymbols: 0,
+        largeFiles: 0,
         totalSymbols: 100,
         totalExports: 20,
+        totalLines: 100,
       },
     };
 
