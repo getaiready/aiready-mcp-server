@@ -91,18 +91,21 @@ export default function ClawHubPage() {
         </div>
 
         <div className="container mx-auto px-4 relative flex flex-col items-center text-center">
+          {/* Lighting Halo to lift content from background */}
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,_rgba(0,224,255,0.08)_0%,_transparent_70%)] blur-3xl" />
+
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm border border-cyber-purple/40 bg-cyber-purple/10 text-cyber-purple text-[10px] font-mono uppercase tracking-[0.3em] mb-12 shadow-[0_0_30px_rgba(188,0,255,0.15)] backdrop-blur-sm">
             <Activity className="w-3 h-3" />
             <span>Autonomous Infrastructure Synthesis</span>
           </div>
 
-          <h1 className="text-6xl md:text-9xl font-black tracking-tighter mb-10 bg-gradient-to-r from-cyber-blue via-white to-cyber-purple bg-clip-text text-transparent leading-[1.2] pb-4 drop-shadow-[0_10px_60px_rgba(0,0,0,1)]">
+          <h1 className="text-6xl md:text-9xl font-black tracking-tighter mb-10 bg-gradient-to-b from-white via-cyber-blue to-[#404040] bg-clip-text text-transparent leading-[1.2] pb-4 drop-shadow-[0_10px_60px_rgba(0,0,0,1)]">
             Never-Dying,
             <br />
             <span className="italic">Self-Evolving</span> Claw
           </h1>
 
-          <p className="text-xl text-zinc-100 max-w-3xl mx-auto mb-14 leading-relaxed font-light drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
+          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-14 leading-relaxed font-light drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
             ClawHub is an autonomous agentic system for AWS. We interpret intent
             and persist infrastructure mutations to source control while you
             sleep.
@@ -111,14 +114,14 @@ export default function ClawHubPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
             <Link
               href="https://github.com/caopengau/serverlessclaw"
-              className="px-12 py-5 rounded-sm bg-cyber-blue hover:bg-cyber-blue/90 text-black transition-all font-black uppercase tracking-widest flex items-center gap-3 group shadow-[0_0_40px_rgba(0,224,255,0.3)]"
+              className="px-12 py-5 rounded-sm bg-white text-black hover:bg-cyber-blue transition-all font-black uppercase tracking-widest flex items-center gap-3 group shadow-[0_0_50px_rgba(255,255,255,0.2)]"
             >
               Initialize Node
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="#waitlist"
-              className="px-12 py-5 rounded-sm border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-bold uppercase tracking-widest text-[14px]"
+              className="px-12 py-5 rounded-sm border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-bold uppercase tracking-widest text-[14px] backdrop-blur-md"
             >
               Managed Beta Access
             </Link>
