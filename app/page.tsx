@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -14,8 +17,20 @@ import {
   Layers,
   Activity,
 } from 'lucide-react';
+import Modal from '../components/Modal';
+import LeadForm from '../components/LeadForm';
 
 export default function ClawMorePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'beta' | 'waitlist'>('beta');
+
+  const openModal = (type: 'beta' | 'waitlist') => {
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-cyber-blue/30 selection:text-cyber-blue font-sans">
       {/* Navigation */}
@@ -75,7 +90,7 @@ export default function ClawMorePage() {
         </div>
       </nav>
 
-      <section className="relative pt-32 pb-48 overflow-hidden border-b border-white/5 isolate">
+      <section className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 isolate py-20">
         {/* Cinematic Background Image - STACKING FIX & MAXIMUM IMPACT */}
         <div className="absolute inset-0 -z-10 bg-[#0a0a0a]">
           <Image
@@ -94,41 +109,47 @@ export default function ClawMorePage() {
           {/* Intensified Lighting Halo to lift content from background */}
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,_rgba(0,224,255,0.15)_0%,_transparent_70%)] blur-3xl opacity-50" />
 
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm border border-cyber-purple/40 bg-cyber-purple/10 text-cyber-purple text-[10px] font-mono uppercase tracking-[0.3em] mb-12 shadow-[0_0_30px_rgba(188,0,255,0.15)] backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm border border-cyber-blue/40 bg-cyber-blue/10 text-cyber-blue text-[10px] font-mono uppercase tracking-[0.3em] mb-12 shadow-[0_0_30px_rgba(0,224,255,0.15)] backdrop-blur-sm">
             <Activity className="w-3 h-3" />
             <span>Autonomous Infrastructure Synthesis</span>
           </div>
 
-          <h1 className="text-6xl md:text-9xl font-black tracking-tighter mb-10 bg-gradient-to-b from-white via-cyber-blue to-[#404040] bg-clip-text text-transparent leading-[1.2] pb-4 drop-shadow-[0_10px_60px_rgba(0,0,0,1)]">
+          {/* Cache-buster: v2-gradient */}
+          <h1 className="text-6xl md:text-9xl font-black tracking-tighter mb-10 bg-gradient-to-r from-[#00e0ff] to-[#bc00ff] bg-clip-text text-transparent leading-[1.2] pb-4 drop-shadow-[0_10px_60px_rgba(0,0,0,1)]">
             Never-Dying,
             <br />
-            <span className="italic">Self-Evolving</span> ClawMore
+            <span className="italic">Self-Evolving</span> Claw
           </h1>
 
           <p className="text-xl text-white/90 max-w-2xl mx-auto mb-14 leading-relaxed font-light drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
-            Serverless, but{' '}
-            <span className="text-cyber-blue font-bold">ClawMore!</span> We
+            <span className="text-cyber-blue font-bold">Serverless</span>, but{' '}
+            <span className="text-cyber-purple font-bold">ClawMore!</span> We
             interpret intent and persist infrastructure mutations to source
             control while you sleep.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-            <Link
-              href="https://github.com/caopengau/serverlessclaw"
+            <button
+              onClick={() => openModal('beta')}
               className="px-12 py-5 rounded-sm bg-white text-black hover:bg-cyber-blue transition-all font-black uppercase tracking-widest flex items-center gap-3 group shadow-[0_0_50px_rgba(255,255,255,0.2)]"
             >
-              Initialize Node
+              Managed Beta Access
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="#waitlist"
+            </button>
+            <button
+              onClick={() => openModal('waitlist')}
               className="px-12 py-5 rounded-sm border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-bold uppercase tracking-widest text-[14px] backdrop-blur-md"
             >
-              Managed Beta Access
-            </Link>
+              Join the Waitlist
+            </button>
           </div>
         </div>
       </section>
+
+      {/* Lead Generation Modal */}
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <LeadForm type={modalType} onSuccess={closeModal} />
+      </Modal>
 
       {/* Core Pillars */}
       <section className="py-24 relative" id="features">

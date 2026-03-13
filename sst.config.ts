@@ -24,6 +24,29 @@ export default $config({
       ? 'clawmore.getaiready.dev'
       : `${$app.stage}.clawmore.getaiready.dev`;
 
+    // Storage for leads
+    const leads = new sst.aws.Bucket('Leads', {
+      public: false,
+    });
+
+    // SNS Topic for notifications
+    const topic = new sst.aws.SnsTopic('LeadNotifications');
+    topic.subscribe('caopengau@gmail.com');
+
+    // API Gateway for lead submissions (standalone to match landing pattern)
+    const api = new sst.aws.ApiGatewayV2('LeadApi', {
+      cors: true,
+    });
+
+    api.route('POST /submit', {
+      handler: 'api/submit-lead.handler',
+      link: [leads, topic],
+      environment: {
+        LEADS_BUCKET: leads.name,
+        TOPIC_ARN: topic.arn,
+      },
+    });
+
     const site = new sst.aws.Nextjs('ClawMoreSite', {
       path: '.',
       domain: {
@@ -34,12 +57,15 @@ export default $config({
       },
       environment: {
         NEXT_PUBLIC_APP_URL: `https://${domainName}`,
+        NEXT_PUBLIC_LEAD_API_URL: api.url,
       },
     });
 
     return {
       site: site.url,
       domain: domainName,
+      apiUrl: api.url,
+      leadsBucket: leads.name,
     };
   },
 });
