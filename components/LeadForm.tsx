@@ -6,10 +6,11 @@ import { Loader2, Send, CheckCircle2 } from 'lucide-react';
 
 interface LeadFormProps {
   type: 'beta' | 'waitlist';
+  apiUrl: string;
   onSuccess?: () => void;
 }
 
-export default function LeadForm({ type, onSuccess }: LeadFormProps) {
+export default function LeadForm({ type, apiUrl, onSuccess }: LeadFormProps) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [notes, setNotes] = useState('');
@@ -26,7 +27,6 @@ export default function LeadForm({ type, onSuccess }: LeadFormProps) {
     setErrorMessage('');
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_LEAD_API_URL;
       if (!apiUrl) throw new Error('API URL not configured');
 
       const response = await fetch(`${apiUrl}/submit`, {
