@@ -105,7 +105,7 @@ export default function ClawMorePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a] opacity-80" />
         </div>
 
-        <div className="container mx-auto px-4 relative flex flex-col items-center text-center">
+        <div className="container mx-auto px-4 relative flex flex-col items-center text-center -mt-20">
           {/* Intensified Lighting Halo to lift content from background */}
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,_rgba(0,224,255,0.15)_0%,_transparent_70%)] blur-3xl opacity-50" />
 
@@ -129,18 +129,18 @@ export default function ClawMorePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+            <Link
+              href="https://github.com/caopengau/serverlessclaw"
+              className="px-12 py-5 rounded-sm bg-white text-black hover:bg-cyber-blue transition-all font-black uppercase tracking-widest flex items-center gap-3 group shadow-[0_0_50px_rgba(255,255,255,0.2)] text-center"
+            >
+              Start Free
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
             <button
               onClick={() => openModal('beta')}
-              className="px-12 py-5 rounded-sm bg-white text-black hover:bg-cyber-blue transition-all font-black uppercase tracking-widest flex items-center gap-3 group shadow-[0_0_50px_rgba(255,255,255,0.2)]"
-            >
-              Managed Beta Access
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button
-              onClick={() => openModal('waitlist')}
               className="px-12 py-5 rounded-sm border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-bold uppercase tracking-widest text-[14px] backdrop-blur-md"
             >
-              Join the Waitlist
+              Managed Beta Access
             </button>
           </div>
         </div>
@@ -345,99 +345,111 @@ export default function ClawMorePage() {
       <section className="py-32" id="pricing">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <div className="text-cyber-purple font-mono text-[9px] uppercase tracking-[0.5em] mb-4">
+            <div className="text-purple-400 font-mono text-xs uppercase tracking-[0.5em] mb-4">
               Sustenance_Model
             </div>
             <h2 className="text-5xl font-black mb-6 tracking-tighter italic">
               Transparent Resource Alloc
             </h2>
-            <p className="text-zinc-500 font-mono text-[11px] uppercase tracking-widest font-bold">
+            <p className="text-zinc-400 font-mono text-sm uppercase tracking-widest font-bold">
               Pay for successful mutations only.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
             {/* Free Tier - STYLISH & EQUAL */}
-            <div className="glass-card p-10 flex flex-col border-cyber-purple/20 bg-cyber-purple/[0.02] hover:border-cyber-purple/40 transition-all shadow-[0_0_80px_rgba(188,0,255,0.05)]">
+            <div className="glass-card p-10 flex flex-col border-purple-500/30 bg-purple-500/[0.03] hover:border-purple-500/50 transition-all shadow-[0_0_80px_rgba(188,0,255,0.08)] relative">
+              <div className="absolute top-0 right-10 -translate-y-1/2 px-4 py-1.5 rounded-sm bg-purple-600 text-white text-[10px] font-black uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(188,0,255,0.3)] z-10">
+                OPEN SOURCE
+              </div>
               <div className="mb-10">
-                <h4 className="text-cyber-purple font-mono text-[9px] uppercase tracking-widest font-black mb-2">
+                <h4 className="text-purple-400 font-mono text-xs uppercase tracking-widest font-black mb-2">
                   Community_Node
                 </h4>
-                <div className="text-5xl font-black tracking-tight text-white">
-                  $0
+                <div className="flex items-baseline gap-2">
+                  <div className="text-6xl font-black tracking-tight text-white">
+                    FREE
+                  </div>
                 </div>
-                <p className="text-[10px] font-mono text-cyber-purple uppercase mt-4 tracking-tighter">
-                  Self-Hosted Perpetual License
+                <p className="text-xs font-mono text-purple-300 uppercase mt-4 tracking-tighter font-bold">
+                  Self-Hosted & Open Source Forever
                 </p>
               </div>
               <ul className="space-y-5 mb-12 flex-grow">
-                <li className="flex items-center gap-3 text-xs text-zinc-200 font-mono uppercase tracking-tight">
-                  <ShieldCheck className="w-4 h-4 text-cyber-purple" /> OSS Core
-                  Engine
+                <li className="flex items-center gap-3 text-sm text-zinc-100 font-mono uppercase tracking-tight">
+                  <ShieldCheck className="w-5 h-5 text-purple-400" /> Full OSS
+                  Core Engine
                 </li>
-                <li className="flex items-center gap-3 text-xs text-zinc-200 font-mono uppercase tracking-tight">
-                  <GitBranch className="w-4 h-4 text-cyber-purple" /> Basic
-                  Archetypes
+                <li className="flex items-center gap-3 text-sm text-zinc-100 font-mono uppercase tracking-tight">
+                  <GitBranch className="w-5 h-5 text-purple-400" /> Unlimited
+                  Local Archetypes
                 </li>
-                <li className="flex items-center gap-3 text-xs text-zinc-200 font-mono uppercase tracking-tight">
-                  <Globe className="w-4 h-4 text-cyber-purple" /> BYOK Only
+                <li className="flex items-center gap-3 text-sm text-zinc-100 font-mono uppercase tracking-tight">
+                  <Globe className="w-5 h-5 text-purple-400" /> Complete VPC
+                  Isolation
+                </li>
+                <li className="flex items-center gap-3 text-sm text-zinc-100 font-mono uppercase tracking-tight">
+                  <Code className="w-5 h-5 text-purple-400" /> MIT Licensed
                 </li>
               </ul>
               <Link
                 href="https://github.com/caopengau/serverlessclaw"
-                className="w-full py-4 rounded-sm border border-cyber-purple/30 text-center hover:bg-cyber-purple/10 transition-all text-[10px] font-black uppercase tracking-widest text-cyber-purple shadow-[0_0_15px_rgba(188,0,255,0.1)]"
+                className="w-full py-5 rounded-sm bg-purple-600 hover:bg-purple-500 transition-all text-white text-xs font-black uppercase text-center tracking-widest shadow-[0_0_25px_rgba(188,0,255,0.2)]"
               >
-                Fork_Repository
+                Get Started Free (OSS)
               </Link>
             </div>
 
             {/* Pro Tier - EQUAL SCALE */}
-            <div className="glass-card p-10 border-cyber-blue/30 bg-cyber-blue/[0.02] relative flex flex-col hover:border-cyber-blue/50 transition-all shadow-[0_0_80px_rgba(0,224,255,0.05)]">
-              <div className="absolute top-0 right-10 -translate-y-1/2 px-4 py-1.5 rounded-sm bg-cyber-blue text-black text-[9px] font-black uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(0,224,255,0.3)]">
+            <div className="glass-card p-10 border-cyber-blue/30 bg-cyber-blue/[0.03] relative flex flex-col hover:border-cyber-blue/50 transition-all shadow-[0_0_80px_rgba(0,224,255,0.08)]">
+              <div className="absolute top-0 right-10 -translate-y-1/2 px-4 py-1.5 rounded-sm bg-cyber-blue text-black text-[10px] font-black uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(0,224,255,0.3)] z-10">
                 MANAGED
               </div>
               <div className="mb-10">
-                <h4 className="text-cyber-blue font-mono text-[9px] uppercase tracking-widest font-black mb-2">
+                <h4 className="text-cyber-blue font-mono text-xs uppercase tracking-widest font-black mb-2">
                   Managed_Core
                 </h4>
-                <div className="text-5xl font-black tracking-tight text-white">
+                <div className="text-6xl font-black tracking-tight text-white">
                   $29
-                  <span className="text-xl font-normal text-zinc-600">/mo</span>
+                  <span className="text-2xl font-normal text-zinc-500">
+                    /mo
+                  </span>
                 </div>
-                <p className="text-[10px] font-mono text-cyber-blue uppercase mt-4 tracking-tighter">
+                <p className="text-xs font-mono text-cyber-blue uppercase mt-4 tracking-tighter font-bold">
                   Infrastructure + Cloud Ops
                 </p>
               </div>
               <ul className="space-y-5 mb-12 flex-grow">
-                <li className="flex items-center gap-3 text-xs text-zinc-200 font-mono uppercase tracking-tight">
-                  <Zap className="w-4 h-4 text-cyber-blue" /> Remote Dashboard
+                <li className="flex items-center gap-3 text-sm text-zinc-100 font-mono uppercase tracking-tight">
+                  <Zap className="w-5 h-5 text-cyber-blue" /> Remote SaaS
+                  Dashboard
                 </li>
-                <li className="flex items-center gap-3 text-xs text-zinc-200 font-mono uppercase tracking-tight">
-                  <RefreshCcw className="w-4 h-4 text-cyber-blue" />{' '}
+                <li className="flex items-center gap-3 text-sm text-zinc-100 font-mono uppercase tracking-tight">
+                  <RefreshCcw className="w-5 h-5 text-cyber-blue" />{' '}
                   Auto-Mutation Sync
                 </li>
-                <li className="flex items-center gap-3 text-xs text-zinc-200 font-mono uppercase tracking-tight">
-                  <MessageSquare className="w-4 h-4 text-cyber-blue" /> Priority
-                  Feedback Loop
+                <li className="flex items-center gap-3 text-sm text-zinc-100 font-mono uppercase tracking-tight">
+                  <MessageSquare className="w-5 h-5 text-cyber-blue" /> Priority
+                  24/7 Feedback Loop
                 </li>
               </ul>
               <Link
                 href="#waitlist"
-                className="w-full py-4 rounded-sm bg-cyber-blue hover:bg-cyber-blue/90 transition-all text-black text-[10px] font-black uppercase text-center tracking-widest shadow-[0_0_20px_rgba(0,224,255,0.2)]"
+                className="w-full py-5 rounded-sm bg-cyber-blue hover:bg-cyber-blue/90 transition-all text-black text-xs font-black uppercase text-center tracking-widest shadow-[0_0_25px_rgba(0,224,255,0.2)]"
               >
-                Join Waitlist
+                Join Managed Waitlist
               </Link>
             </div>
           </div>
 
-          <div className="mt-20 glass-card p-8 max-w-2xl mx-auto border-cyber-purple/20 bg-cyber-purple/[0.02]">
+          <div className="mt-20 glass-card p-10 max-w-2xl mx-auto border-purple-500/20 bg-purple-500/[0.02]">
             <div className="flex items-center gap-3 mb-4">
-              <Activity className="w-4 h-4 text-cyber-purple" />
-              <h5 className="font-mono text-[10px] font-black uppercase tracking-[0.4em] text-cyber-purple">
+              <Activity className="w-5 h-5 text-purple-400" />
+              <h5 className="font-mono text-xs font-black uppercase tracking-[0.4em] text-purple-400">
                 The Evolution_Tax.cfg
               </h5>
             </div>
-            <p className="text-xs text-zinc-400 font-mono leading-relaxed tracking-tight">
+            <p className="text-sm text-zinc-400 font-mono leading-relaxed tracking-tight">
               We align our success with your system&apos;s growth. We deduct{' '}
               <span className="text-white font-bold">
                 $1 per verified mutation
