@@ -183,7 +183,7 @@ export default function BlogPost() {
 
                 <SystemFlow
                   nodes={COST_NODES}
-                  edges={CODER_EDGES}
+                  edges={COST_EDGES}
                   height="350px"
                 />
 
