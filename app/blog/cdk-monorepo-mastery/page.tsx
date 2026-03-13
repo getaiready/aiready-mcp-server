@@ -1,0 +1,301 @@
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import {
+  ArrowLeft,
+  Clock,
+  Hash,
+  Terminal,
+  Activity,
+  Zap,
+  ChevronRight,
+  Code,
+  Box,
+  Layers,
+  ShieldCheck,
+  Cpu,
+} from 'lucide-react';
+import Modal from '../../../components/Modal';
+import LeadForm from '../../../components/LeadForm';
+import SystemFlow from '../../../components/SystemFlow';
+
+const CDK_NODES = [
+  {
+    id: 'monorepo',
+    data: { label: 'NPM_WORKSPACES_ROOT', type: 'bus' },
+    position: { x: 0, y: 0 },
+  },
+  {
+    id: 'gateway',
+    data: { label: 'GATEWAY_PACKAGE', type: 'agent' },
+    position: { x: 250, y: -50 },
+  },
+  {
+    id: 'core',
+    data: { label: 'CORE_ENGINE_PACKAGE', type: 'agent' },
+    position: { x: 250, y: 50 },
+  },
+  {
+    id: 'cdk',
+    data: { label: 'AWS_CDK_BLUEPRINT', type: 'bus' },
+    position: { x: 500, y: 0 },
+  },
+  {
+    id: 'cloud',
+    data: { label: '[AWS_REGION_TARGET]', type: 'agent' },
+    position: { x: 750, y: 0 },
+  },
+];
+
+const CDK_EDGES = [
+  {
+    id: 'e1',
+    source: 'monorepo',
+    target: 'gateway',
+    label: 'Export',
+    animated: true,
+  },
+  {
+    id: 'e2',
+    source: 'monorepo',
+    target: 'core',
+    label: 'Export',
+    animated: true,
+  },
+  {
+    id: 'e3',
+    source: 'gateway',
+    target: 'cdk',
+    label: 'Define',
+    animated: true,
+  },
+  { id: 'e4', source: 'core', target: 'cdk', label: 'Define', animated: true },
+  {
+    id: 'e5',
+    source: 'cdk',
+    target: 'cloud',
+    label: 'Deploy',
+    animated: true,
+    style: { stroke: '#00e0ff' },
+  },
+];
+
+export default function BlogPost() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const apiUrl = process.env.NEXT_PUBLIC_LEAD_API_URL || '';
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-cyber-purple/30 selection:text-cyber-purple font-sans">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-4">
+            <Image
+              src="/logo.png"
+              alt="ClawMore Logo"
+              width={32}
+              height={32}
+              className="drop-shadow-[0_0_8px_rgba(188,0,255,0.6)]"
+            />
+            <span className="text-xl font-bold tracking-tight italic glow-text">
+              ClawMore
+            </span>
+          </Link>
+          <div className="flex items-center gap-8 text-[11px] font-mono uppercase tracking-widest text-zinc-500">
+            <Link
+              href="/blog"
+              className="hover:text-cyber-purple transition-colors flex items-center gap-2"
+            >
+              <ArrowLeft className="w-3 h-3" /> Back to Journal
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Article Header */}
+      <header className="py-24 border-b border-white/5 relative overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,_rgba(188,0,255,0.05)_0%,_transparent_70%)] opacity-30" />
+
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="text-cyber-purple font-mono text-[9px] uppercase tracking-[0.4em] font-black border border-cyber-purple/20 px-2 py-1 bg-cyber-purple/5">
+                INFRA_AS_CODE
+              </div>
+              <div className="flex items-center gap-1.5 text-zinc-600 font-mono text-[9px]">
+                <Hash className="w-3 h-3" />
+                <span>HASH: cdk-master</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-zinc-600 font-mono text-[9px]">
+                <Clock className="w-3 h-3" />
+                <span>06 MIN READ</span>
+              </div>
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 italic leading-[1.1]">
+              Infrastructure as Code: <br />
+              <span className="text-cyber-purple">CDK Monorepo Mastery</span>
+            </h1>
+
+            <p className="text-xl text-zinc-400 font-light leading-relaxed italic">
+              Organizing a complex AI backbone into a single, deployable
+              blueprint. How we use AWS CDK and npm workspaces to manage the
+              serverlessclaw monorepo.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      {/* Article Content */}
+      <main className="py-24">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <article className="prose prose-invert prose-zinc max-w-none">
+              <div className="space-y-12">
+                <section>
+                  <h2 className="text-3xl font-black tracking-tight mb-6 flex items-center gap-4">
+                    <span className="text-cyber-purple font-mono text-sm">
+                      01
+                    </span>
+                    The Complexity Problem
+                  </h2>
+                  <p className="text-zinc-400 leading-relaxed text-lg">
+                    A system like `serverlessclaw` isn't just a single script.
+                    It's a collection of Lambda functions, Fargate tasks,
+                    DynamoDB tables, S3 buckets, and IAM roles. Manually
+                    configuring these in the AWS Console is a recipe for
+                    disaster.
+                  </p>
+                  <p className="text-zinc-400 leading-relaxed text-lg mt-6">
+                    We needed a way to version our infrastructure alongside our
+                    code. We chose the **AWS CDK** (Cloud Development Kit) to
+                    treat our cloud architecture as a software library.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-3xl font-black tracking-tight mb-6 flex items-center gap-4">
+                    <span className="text-cyber-purple font-mono text-sm">
+                      02
+                    </span>
+                    The Monorepo Blueprint
+                  </h2>
+                  <p className="text-zinc-400 leading-relaxed text-lg">
+                    By using **npm workspaces**, we organize the engine into
+                    discrete, reusable packages. The `gateway` handles inbound
+                    signals, the `core` manages reasoning, and the `infra`
+                    package contains the CDK stacks that tie it all together.
+                  </p>
+                </section>
+
+                <SystemFlow
+                  nodes={CDK_NODES}
+                  edges={CDK_EDGES}
+                  height="350px"
+                />
+
+                <section>
+                  <h2 className="text-3xl font-black tracking-tight mb-6 flex items-center gap-4">
+                    <span className="text-cyber-purple font-mono text-sm">
+                      03
+                    </span>
+                    TypeScript End-to-End
+                  </h2>
+                  <p className="text-zinc-400 leading-relaxed text-lg">
+                    One of the biggest advantages of our setup is **Type
+                    Safety**. Because both our application code and our
+                    infrastructure are written in TypeScript, we can share types
+                    between the two. When we update a DynamoDB table schema in
+                    our CDK stack, the application code immediately knows about
+                    it.
+                  </p>
+                  <div className="mt-8 p-6 bg-zinc-900/50 border border-white/10 rounded-sm font-mono text-[11px] text-zinc-400">
+                    <div className="flex items-center gap-2 text-cyber-purple mb-2">
+                      <Box className="w-3 h-3" />
+                      <span>CLAW_BLUEPRINT.ts</span>
+                    </div>
+                    {`// Defining the Neural Spine in CDK
+export class ClawSpineStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    const bus = new events.EventBus(this, 'NeuralBus');
+    const table = new dynamodb.Table(this, 'TaskState', {
+      partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+    });
+
+    // Link everything to the Fargate reasoning engine
+    new ClawFargateEngine(this, 'Engine', { bus, table });
+  }
+}`}
+                  </div>
+                </section>
+
+                <section>
+                  <h2 className="text-3xl font-black tracking-tight mb-6 flex items-center gap-4">
+                    <span className="text-cyber-purple font-mono text-sm">
+                      04
+                    </span>
+                    The Series Finale
+                  </h2>
+                  <p className="text-zinc-400 leading-relaxed text-lg">
+                    This concludes our 10-part deep dive into the **Reflective
+                    Neural Journal**. From the philosophy of mutable logic to
+                    the mastery of CDK deployment, we hope this series has
+                    provided a clear blueprint for the future of autonomous
+                    infrastructure.
+                  </p>
+                  <p className="text-zinc-400 leading-relaxed text-lg mt-6">
+                    The code is open. The architecture is proven. The only thing
+                    missing is your first mutation.
+                  </p>
+                </section>
+              </div>
+
+              {/* Series Completion */}
+              <div className="mt-24 pt-12 border-t border-white/5 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyber-purple/10 border border-cyber-purple/20 text-cyber-purple text-[10px] font-mono uppercase tracking-[0.3em] mb-8">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>ALL_MODULES_SYNCHRONIZED // 10/10</span>
+                </div>
+                <h3 className="text-3xl font-black italic mb-8 text-white">
+                  The Journey Begins Here
+                </h3>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <Link
+                    href="https://github.com/caopengau/serverlessclaw"
+                    className="px-10 py-4 bg-white text-black font-black uppercase text-xs tracking-[0.2em] hover:bg-cyber-blue transition-all"
+                  >
+                    Fork the Repository
+                  </Link>
+                  <Link
+                    href="/blog"
+                    className="px-10 py-4 border border-white/20 font-black uppercase text-xs tracking-[0.2em] hover:bg-white/10 transition-all backdrop-blur-md"
+                  >
+                    Back to Journal Index
+                  </Link>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="py-20 bg-black">
+        <div className="container mx-auto px-4 text-center text-zinc-700 text-[10px] font-mono uppercase tracking-[0.5em]">
+          TERMINAL_LOCKED // 2026 PERPETUAL_EVOLUTION
+        </div>
+      </footer>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <LeadForm type="waitlist" onSuccess={closeModal} apiUrl={apiUrl} />
+      </Modal>
+    </div>
+  );
+}

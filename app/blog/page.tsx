@@ -107,6 +107,16 @@ const BLOG_POSTS = [
     hash: 'state-void',
     category: 'EPHEMERAL_PERSISTENCE',
   },
+  {
+    slug: 'cdk-monorepo-mastery',
+    title: 'Infrastructure as Code: CDK Monorepo Mastery',
+    excerpt:
+      'Organizing a complex AI backbone into a single, deployable blueprint. How we use AWS CDK and npm workspaces to manage the serverlessclaw monorepo.',
+    date: 'FEB 23, 2026',
+    readTime: '06 MIN',
+    hash: 'cdk-master',
+    category: 'INFRA_AS_CODE',
+  },
 ];
 
 export default function BlogIndex() {
