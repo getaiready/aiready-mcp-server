@@ -1,10 +1,9 @@
-import { Resource } from 'sst';
 import ClawMoreClient from './ClawMoreClient';
 
 export default function ClawMorePage() {
-  // Access the linked resource URL directly on the server
-  // This is robust and guaranteed to be correct in SST v3
-  const apiUrl = Resource.LeadApi.url;
+  // Use environment variable which SST correctly injects at runtime
+  // This is safer for Next.js build-time and local dev without 'sst dev'
+  const apiUrl = process.env.LEAD_API_URL || '';
 
   return <ClawMoreClient apiUrl={apiUrl} />;
 }

@@ -1,12 +1,11 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
-import { Resource } from 'sst';
 
 const s3 = new S3Client({});
 const sns = new SNSClient({});
 
-const bucketName = Resource.Leads.name;
-const topicArn = Resource.LeadNotifications.arn;
+const bucketName = process.env.LEADS_BUCKET;
+const topicArn = process.env.TOPIC_ARN;
 
 export const handler = async (event: any) => {
   const method = event.requestContext?.http?.method || 'POST';

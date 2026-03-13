@@ -45,6 +45,10 @@ export default $config({
     api.route('POST /submit', {
       handler: 'api/submit-lead.handler',
       link: [leads, topic],
+      environment: {
+        LEADS_BUCKET: leads.name,
+        TOPIC_ARN: topic.arn,
+      },
     });
 
     const site = new sst.aws.Nextjs('ClawMoreSite', {
@@ -58,6 +62,7 @@ export default $config({
       },
       environment: {
         NEXT_PUBLIC_APP_URL: `https://${domainName}`,
+        LEAD_API_URL: api.url,
       },
     });
 
