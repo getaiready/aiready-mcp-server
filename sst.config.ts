@@ -54,14 +54,21 @@ export default $config({
     const site = new sst.aws.Nextjs('ClawMoreSite', {
       path: '.',
       link: [api],
-      domain: {
-        name: domainName,
-        dns: sst.cloudflare.dns({
-          zone: '50eb7dcadc84c58ab34583742db0b671',
-        }),
+      dev: {
+        command: 'pnpm run dev:next',
+        autostart: true,
       },
+      domain:
+        $app.stage === 'production'
+          ? {
+              name: domainName,
+              dns: sst.cloudflare.dns({
+                zone: '50eb7dcadc84c58ab34583742db0b671',
+              }),
+            }
+          : undefined,
       environment: {
-        NEXT_PUBLIC_APP_URL: `https://${domainName}`,
+        NEXT_PUBLIC_APP_URL: isProd ? `https://${domainName}` : undefined,
         LEAD_API_URL: api.url,
       },
     });
