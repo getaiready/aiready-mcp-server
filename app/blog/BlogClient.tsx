@@ -1,4 +1,9 @@
 'use client';
-export default function BlogClient() {
+
+interface BlogClientProps {
+  apiUrl: string;
+}
+
+export default function BlogClient({ apiUrl }: BlogClientProps) {
   return null;
 }
