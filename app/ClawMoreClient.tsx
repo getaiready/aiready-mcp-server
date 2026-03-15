@@ -96,7 +96,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
       <JsonLd data={CLAW_MORE_JSON_LD} />
       <Navbar dict={dict} />
 
-      <section className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 isolate py-20">
+      <section className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 isolate py-14 sm:py-20">
         {/* Cinematic Background Image - STACKING FIX & MAXIMUM IMPACT */}
         <div className="absolute inset-0 -z-10 bg-[#0a0a0a]">
           <Image
@@ -111,38 +111,38 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a] opacity-80" />
         </div>
 
-        <div className="container mx-auto px-4 relative flex flex-col items-center text-center -mt-20">
+        <div className="container mx-auto px-4 relative flex flex-col items-center text-center -mt-8 sm:-mt-14 md:-mt-20">
           {/* Intensified Lighting Halo to lift content from background */}
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,_rgba(0,224,255,0.15)_0%,_transparent_70%)] blur-3xl opacity-50" />
 
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm border border-cyber-blue/40 bg-cyber-blue/10 text-cyber-blue text-[10px] font-mono uppercase tracking-[0.3em] mb-12 shadow-[0_0_30px_rgba(0,224,255,0.15)] backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-sm border border-cyber-blue/40 bg-cyber-blue/10 text-cyber-blue text-[10px] font-mono uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-8 sm:mb-12 shadow-[0_0_30px_rgba(0,224,255,0.15)] backdrop-blur-sm">
             <Activity className="w-3 h-3" />
             <span>{dict.hero.badge}</span>
           </div>
 
           {/* Cache-buster: v2-gradient */}
-          <h1 className="text-6xl md:text-9xl font-black tracking-tighter mb-10 bg-gradient-to-r from-[#00e0ff] to-[#bc00ff] bg-clip-text text-transparent leading-[1.2] pb-4 drop-shadow-[0_10px_60px_rgba(0,0,0,1)]">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-8 sm:mb-10 bg-gradient-to-r from-[#00e0ff] to-[#bc00ff] bg-clip-text text-transparent leading-[1.15] sm:leading-[1.2] pb-3 sm:pb-4 drop-shadow-[0_10px_60px_rgba(0,0,0,1)]">
             {dict.hero.title1}
             <br />
             <span className="italic">{dict.hero.title2}</span>{' '}
             {dict.hero.title3}
           </h1>
 
-          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-14 leading-relaxed font-light drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
+          <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-10 sm:mb-14 leading-relaxed font-light drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
             {dict.hero.description}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+          <div className="w-full max-w-lg sm:max-w-none flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-8">
             <Link
               href="https://github.com/caopengau/serverlessclaw"
-              className="px-12 py-5 rounded-sm bg-white text-black hover:bg-cyber-blue transition-all font-black uppercase tracking-widest flex items-center gap-3 group shadow-[0_0_50px_rgba(255,255,255,0.2)] text-center"
+              className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-5 rounded-sm bg-white text-black hover:bg-cyber-blue transition-all font-black uppercase tracking-widest flex items-center justify-center gap-3 group shadow-[0_0_50px_rgba(255,255,255,0.2)] text-center"
             >
               {dict.common.startFree}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <button
               onClick={() => openModal('beta')}
-              className="px-12 py-5 rounded-sm border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-bold uppercase tracking-widest text-[14px] backdrop-blur-md"
+              className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-5 rounded-sm border border-white/20 bg-white/5 hover:bg-white/10 transition-all font-bold uppercase tracking-widest text-[13px] sm:text-[14px] backdrop-blur-md"
             >
               {dict.common.managedBetaAccess}
             </button>
@@ -161,11 +161,14 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
       </Modal>
 
       {/* Core Pillars */}
-      <section className="py-24 relative" id="features">
+      <section
+        className="py-16 sm:py-24 relative scroll-mt-24 sm:scroll-mt-28"
+        id="features"
+      >
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,_transparent,_rgba(0,255,163,0.02),_transparent)] pointer-events-none" />
         <div className="container mx-auto px-4 relative">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass-card p-10 hover:border-cyber-blue/30 transition-all group">
+            <div className="glass-card p-6 sm:p-10 hover:border-cyber-blue/30 transition-all group">
               <div className="w-14 h-14 rounded-sm bg-cyber-blue/10 flex items-center justify-center text-cyber-blue mb-8 border border-cyber-blue/20 group-hover:scale-110 transition-transform">
                 <RefreshCcw className="w-7 h-7" />
               </div>
@@ -177,7 +180,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
               </p>
             </div>
 
-            <div className="glass-card p-10 hover:border-purple-500/30 transition-all group">
+            <div className="glass-card p-6 sm:p-10 hover:border-purple-500/30 transition-all group">
               <div className="w-14 h-14 rounded-sm bg-purple-500/10 flex items-center justify-center text-purple-400 mb-8 border border-purple-500/20 group-hover:scale-110 transition-transform">
                 <Cpu className="w-7 h-7" />
               </div>
@@ -189,7 +192,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
               </p>
             </div>
 
-            <div className="glass-card p-10 hover:border-cyber-purple/30 transition-all group">
+            <div className="glass-card p-6 sm:p-10 hover:border-cyber-purple/30 transition-all group">
               <div className="w-14 h-14 rounded-sm bg-cyber-purple/10 flex items-center justify-center text-cyber-purple mb-8 border border-cyber-purple/20 group-hover:scale-110 transition-transform">
                 <ShieldCheck className="w-7 h-7" />
               </div>
@@ -206,19 +209,19 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
 
       {/* Evolution Loop Visual */}
       <section
-        className="py-24 bg-black/40 border-y border-white/5 relative overflow-hidden"
+        className="py-16 sm:py-24 bg-black/40 border-y border-white/5 relative overflow-hidden scroll-mt-24 sm:scroll-mt-28"
         id="evolution"
       >
         <div className="container mx-auto px-4 relative">
-          <div className="flex flex-col lg:flex-row items-center gap-20">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="flex-1">
               <div className="text-cyber-blue font-mono text-[10px] uppercase tracking-[0.4em] mb-4">
                 {dict.evolution.visualizer}
               </div>
-              <h2 className="text-5xl font-black mb-8 tracking-tighter italic">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 sm:mb-8 tracking-tighter italic">
                 {dict.evolution.title}
               </h2>
-              <p className="text-zinc-400 mb-10 leading-relaxed text-lg font-light">
+              <p className="text-zinc-400 mb-8 sm:mb-10 leading-relaxed text-base sm:text-lg font-light">
                 {dict.evolution.desc}
               </p>
 
@@ -226,7 +229,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
                 {dict.evolution.steps.map((item: any, idx: number) => (
                   <div
                     key={idx}
-                    className="flex gap-6 p-5 rounded-sm border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all group"
+                    className="flex gap-4 sm:gap-6 p-4 sm:p-5 rounded-sm border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all group"
                   >
                     <div className="text-zinc-600 font-mono text-sm group-hover:text-cyber-blue transition-colors">
                       0{idx + 1}
@@ -246,7 +249,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
 
             <div className="flex-1 relative w-full aspect-square max-w-[550px] group">
               <div className="absolute inset-0 bg-cyber-blue/10 rounded-full blur-[100px] animate-pulse group-hover:bg-cyber-blue/20 transition-all" />
-              <div className="relative h-full w-full rounded-sm border border-white/10 bg-[#060606] p-8 font-mono text-[11px] overflow-hidden shadow-2xl">
+              <div className="relative h-full w-full rounded-sm border border-white/10 bg-[#060606] p-4 sm:p-8 font-mono text-[10px] sm:text-[11px] overflow-hidden shadow-2xl">
                 <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
                   <div className="flex items-center gap-2">
                     <Terminal className="w-4 h-4 text-cyber-blue" />
@@ -314,13 +317,16 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-32" id="pricing">
+      <section
+        className="py-20 sm:py-32 scroll-mt-24 sm:scroll-mt-28"
+        id="pricing"
+      >
         <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 sm:mb-20">
             <div className="text-purple-400 font-mono text-xs uppercase tracking-[0.5em] mb-4">
               {dict.pricing.model}
             </div>
-            <h2 className="text-5xl font-black mb-6 tracking-tighter italic">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 tracking-tighter italic">
               {dict.pricing.title}
             </h2>
             <p className="text-zinc-400 font-mono text-sm uppercase tracking-widest font-bold">
@@ -330,8 +336,8 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
             {/* Free Tier - STYLISH & EQUAL */}
-            <div className="glass-card p-10 flex flex-col border-purple-500/30 bg-purple-500/[0.03] hover:border-purple-500/50 transition-all shadow-[0_0_80px_rgba(188,0,255,0.08)] relative">
-              <div className="absolute top-0 right-10 -translate-y-1/2 px-4 py-1.5 rounded-sm bg-purple-600 text-white text-[10px] font-black uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(188,0,255,0.3)] z-10">
+            <div className="glass-card p-6 sm:p-10 flex flex-col border-purple-500/30 bg-purple-500/[0.03] hover:border-purple-500/50 transition-all shadow-[0_0_80px_rgba(188,0,255,0.08)] relative">
+              <div className="absolute top-0 right-4 sm:right-10 -translate-y-1/2 px-3 sm:px-4 py-1.5 rounded-sm bg-purple-600 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] shadow-[0_0_20px_rgba(188,0,255,0.3)] z-10">
                 {dict.pricing.community.badge}
               </div>
               <div className="mb-10">
@@ -339,7 +345,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
                   {dict.pricing.community.name}
                 </h4>
                 <div className="flex items-baseline gap-2">
-                  <div className="text-6xl font-black tracking-tight text-white">
+                  <div className="text-5xl sm:text-6xl font-black tracking-tight text-white">
                     {dict.pricing.community.price}
                   </div>
                 </div>
@@ -369,15 +375,15 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
             </div>
 
             {/* Pro Tier - EQUAL SCALE */}
-            <div className="glass-card p-10 border-cyber-blue/30 bg-cyber-blue/[0.03] relative flex flex-col hover:border-cyber-blue/50 transition-all shadow-[0_0_80px_rgba(0,224,255,0.08)]">
-              <div className="absolute top-0 right-10 -translate-y-1/2 px-4 py-1.5 rounded-sm bg-cyber-blue text-black text-[10px] font-black uppercase tracking-[0.3em] shadow-[0_0_20px_rgba(0,224,255,0.3)] z-10">
+            <div className="glass-card p-6 sm:p-10 border-cyber-blue/30 bg-cyber-blue/[0.03] relative flex flex-col hover:border-cyber-blue/50 transition-all shadow-[0_0_80px_rgba(0,224,255,0.08)]">
+              <div className="absolute top-0 right-4 sm:right-10 -translate-y-1/2 px-3 sm:px-4 py-1.5 rounded-sm bg-cyber-blue text-black text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] shadow-[0_0_20px_rgba(0,224,255,0.3)] z-10">
                 {dict.pricing.managed.badge}
               </div>
               <div className="mb-10">
                 <h4 className="text-cyber-blue font-mono text-xs uppercase tracking-widest font-black mb-2">
                   {dict.pricing.managed.name}
                 </h4>
-                <div className="text-6xl font-black tracking-tight text-white">
+                <div className="text-5xl sm:text-6xl font-black tracking-tight text-white">
                   {dict.pricing.managed.price}
                   <span className="text-2xl font-normal text-zinc-500">
                     {dict.pricing.managed.period}
@@ -408,7 +414,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
             </div>
           </div>
 
-          <div className="mt-20 glass-card p-10 max-w-2xl mx-auto border-purple-500/20 bg-purple-500/[0.02]">
+          <div className="mt-12 sm:mt-20 glass-card p-6 sm:p-10 max-w-2xl mx-auto border-purple-500/20 bg-purple-500/[0.02]">
             <div className="flex items-center gap-3 mb-4">
               <Activity className="w-5 h-5 text-purple-400" />
               <h5 className="font-mono text-xs font-black uppercase tracking-[0.4em] text-purple-400">
@@ -425,7 +431,7 @@ export default function ClawMoreClient({ apiUrl, dict }: ClawMoreClientProps) {
       <FAQ items={FAQ_ITEMS} title={dict.faq.title} />
 
       {/* Footer */}
-      <footer className="py-20 border-t border-white/5 bg-black/40">
+      <footer className="py-14 sm:py-20 border-t border-white/5 bg-black/40">
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-4 mb-10">
             <Image

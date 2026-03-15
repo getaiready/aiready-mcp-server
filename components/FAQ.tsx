@@ -21,12 +21,12 @@ export default function FAQ({
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-24 border-t border-white/5 bg-black/20">
+    <section className="py-16 sm:py-24 border-t border-white/5 bg-black/20">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-3 mb-12">
+          <div className="flex items-center gap-3 mb-8 sm:mb-12">
             <HelpCircle className="w-6 h-6 text-cyber-blue" />
-            <h2 className="text-3xl font-black tracking-tighter italic">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tighter italic">
               {title}
             </h2>
           </div>
@@ -41,9 +41,9 @@ export default function FAQ({
                   onClick={() =>
                     setOpenIndex(openIndex === index ? null : index)
                   }
-                  className="w-full flex items-center justify-between p-6 text-left"
+                  className="w-full flex items-center justify-between p-4 sm:p-6 text-left"
                 >
-                  <span className="font-mono text-xs uppercase tracking-widest text-zinc-200">
+                  <span className="font-mono text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-zinc-200">
                     {item.question}
                   </span>
                   {openIndex === index ? (
@@ -61,7 +61,7 @@ export default function FAQ({
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="p-6 pt-0 text-sm text-zinc-400 leading-relaxed border-t border-white/5 mt-4 pt-4">
+                      <div className="p-4 sm:p-6 text-sm text-zinc-400 leading-relaxed border-t border-white/5 mt-4">
                         {item.answer}
                       </div>
                     </motion.div>
