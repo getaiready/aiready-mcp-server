@@ -101,8 +101,8 @@ export default function BlogPost() {
       name: 'ClawMore',
     },
     image:
-      'https://clawmore.getaiready.dev/blog/surviving-void-ephemeral-persistence.png',
-    url: 'https://clawmore.getaiready.dev/blog/surviving-void-ephemeral-persistence',
+      'https://clawmore.getaiready.dev/blog-assets/surviving-void-ephemeral-persistence.png',
+    url: 'https://clawmore.getaiready.dev/blog-assets/surviving-void-ephemeral-persistence',
   };
 
   return (
@@ -144,7 +144,7 @@ export default function BlogPost() {
 
             <div className="mt-12 relative aspect-[21/9] w-full overflow-hidden border border-white/10 rounded-sm group">
               <img
-                src="/blog/surviving-void-ephemeral-persistence.png"
+                src="/blog-assets/surviving-void-ephemeral-persistence.png"
                 alt="Surviving the Void: Cross-Lifecycle Memory"
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               />

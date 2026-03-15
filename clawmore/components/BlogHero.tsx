@@ -9,7 +9,7 @@ export default function BlogHero() {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,_rgba(188,0,255,0.05)_0%,_transparent_70%)] opacity-50" />
       <div className="absolute inset-0 -z-20 opacity-20">
         <img
-          src="/blog/blog-hero.png"
+          src="/blog-assets/blog-hero.png"
           alt="Hero Background"
           className="w-full h-full object-cover"
         />

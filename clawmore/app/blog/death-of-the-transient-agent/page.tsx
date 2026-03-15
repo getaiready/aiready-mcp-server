@@ -97,7 +97,7 @@ export default function BlogPost() {
       name: 'ClawMore',
     },
     image:
-      'https://clawmore.getaiready.dev/blog/death-of-the-transient-agent.png',
+      'https://clawmore.getaiready.dev/blog-assets/death-of-the-transient-agent.png',
   };
 
   return (
@@ -137,7 +137,7 @@ export default function BlogPost() {
 
             <div className="mt-12 relative aspect-[21/9] w-full overflow-hidden border border-white/10 rounded-sm group">
               <img
-                src="/blog/death-of-the-transient-agent.png"
+                src="/blog-assets/death-of-the-transient-agent.png"
                 alt="The Death of the Transient Agent"
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               />
