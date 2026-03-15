@@ -101,8 +101,8 @@ export default function BlogPost() {
       name: 'ClawMore',
     },
     image:
-      'https://clawmore.getaiready.dev/blog/the-reflector-self-critique.png',
-    url: 'https://clawmore.getaiready.dev/blog/the-reflector-self-critique',
+      'https://clawmore.getaiready.dev/blog-assets/the-reflector-self-critique.png',
+    url: 'https://clawmore.getaiready.dev/blog-assets/the-reflector-self-critique',
   };
 
   return (
@@ -143,7 +143,7 @@ export default function BlogPost() {
 
             <div className="mt-12 relative aspect-[21/9] w-full overflow-hidden border border-white/10 rounded-sm group">
               <img
-                src="/blog/the-reflector-self-critique.png"
+                src="/blog-assets/the-reflector-self-critique.png"
                 alt="The Reflector: Machines that Self-Critique"
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               />

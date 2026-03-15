@@ -19,7 +19,7 @@ const BLOG_POSTS = [
     hash: 'reflector',
     category: 'AGENTS',
     image:
-      'https://clawmore.getaiready.dev/blog/the-reflector-self-critique.png',
+      'https://clawmore.getaiready.dev/blog-assets/the-reflector-self-critique.png',
   },
   {
     slug: 'surviving-void-ephemeral-persistence',
@@ -31,7 +31,7 @@ const BLOG_POSTS = [
     hash: 'ephemeral',
     category: 'ARCHITECTURE',
     image:
-      'https://clawmore.getaiready.dev/blog/surviving-void-ephemeral-persistence.png',
+      'https://clawmore.getaiready.dev/blog-assets/surviving-void-ephemeral-persistence.png',
   },
   {
     slug: 'sst-ion-coder-loop',
@@ -42,7 +42,7 @@ const BLOG_POSTS = [
     readTime: '6 min read',
     hash: 'sstloop',
     category: 'DEVOPS',
-    image: 'https://clawmore.getaiready.dev/blog/sst-ion-coder-loop.png',
+    image: 'https://clawmore.getaiready.dev/blog-assets/sst-ion-coder-loop.png',
   },
   {
     slug: 'cdk-monorepo-mastery',
@@ -53,7 +53,7 @@ const BLOG_POSTS = [
     readTime: '7 min read',
     hash: 'cdkmono',
     category: 'INFRASTRUCTURE',
-    image: 'https://clawmore.getaiready.dev/blog/cdk-monorepo-mastery.png',
+    image: 'https://clawmore.getaiready.dev/blog-assets/cdk-monorepo-mastery.png',
   },
   {
     slug: 'omni-channel-ai-gateway',
@@ -64,7 +64,7 @@ const BLOG_POSTS = [
     readTime: '8 min read',
     hash: 'omnichan',
     category: 'INTEGRATIONS',
-    image: 'https://clawmore.getaiready.dev/blog/omni-channel-ai-gateway.png',
+    image: 'https://clawmore.getaiready.dev/blog-assets/omni-channel-ai-gateway.png',
   },
   {
     slug: 'bridge-pattern-ephemeral-persistent',
@@ -76,7 +76,7 @@ const BLOG_POSTS = [
     hash: 'bridge',
     category: 'PATTERNS',
     image:
-      'https://clawmore.getaiready.dev/blog/bridge-pattern-ephemeral-persistent.png',
+      'https://clawmore.getaiready.dev/blog-assets/bridge-pattern-ephemeral-persistent.png',
   },
   {
     slug: 'ironclad-autonomy-safety-vpc',
@@ -88,7 +88,7 @@ const BLOG_POSTS = [
     hash: 'safety',
     category: 'SECURITY',
     image:
-      'https://clawmore.getaiready.dev/blog/ironclad-autonomy-safety-vpc.png',
+      'https://clawmore.getaiready.dev/blog-assets/ironclad-autonomy-safety-vpc.png',
   },
   {
     slug: 'eventbridge-the-neural-spine',
@@ -100,7 +100,7 @@ const BLOG_POSTS = [
     hash: 'neuralbus',
     category: 'ARCHITECTURE',
     image:
-      'https://clawmore.getaiready.dev/blog/eventbridge-the-neural-spine.png',
+      'https://clawmore.getaiready.dev/blog-assets/eventbridge-the-neural-spine.png',
   },
   {
     slug: 'death-of-the-transient-agent',
@@ -112,7 +112,7 @@ const BLOG_POSTS = [
     hash: 'transient',
     category: 'ARCHITECTURE',
     image:
-      'https://clawmore.getaiready.dev/blog/death-of-the-transient-agent.png',
+      'https://clawmore.getaiready.dev/blog-assets/death-of-the-transient-agent.png',
   },
   {
     slug: 'one-dollar-ai-agent',
@@ -123,7 +123,7 @@ const BLOG_POSTS = [
     readTime: '5 min read',
     hash: '1dollarai',
     category: 'INFRASTRUCTURE',
-    image: 'https://clawmore.getaiready.dev/blog/one-dollar-ai-agent.png',
+    image: 'https://clawmore.getaiready.dev/blog-assets/one-dollar-ai-agent.png',
   },
 ];
 

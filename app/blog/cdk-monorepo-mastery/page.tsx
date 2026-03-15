@@ -102,7 +102,7 @@ export default function BlogPost() {
       '@type': 'Organization',
       name: 'ClawMore',
     },
-    image: 'https://clawmore.getaiready.dev/blog/cdk-monorepo-mastery.png',
+    image: 'https://clawmore.getaiready.dev/blog-assets/cdk-monorepo-mastery.png',
   };
 
   return (
@@ -143,7 +143,7 @@ export default function BlogPost() {
 
             <div className="mt-12 relative aspect-[21/9] w-full overflow-hidden border border-white/10 rounded-sm group">
               <img
-                src="/blog/cdk-monorepo-mastery.png"
+                src="/blog-assets/cdk-monorepo-mastery.png"
                 alt="Infrastructure as Code: CDK Monorepo Mastery"
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               />

@@ -92,8 +92,8 @@ export default function BlogPost() {
       '@type': 'Person',
       name: 'Minimalist Architect',
     },
-    image: 'https://clawmore.getaiready.dev/blog/one-dollar-ai-agent.png',
-    url: 'https://clawmore.getaiready.dev/blog/one-dollar-ai-agent',
+    image: 'https://clawmore.getaiready.dev/blog-assets/one-dollar-ai-agent.png',
+    url: 'https://clawmore.getaiready.dev/blog-assets/one-dollar-ai-agent',
   };
 
   return (
@@ -134,7 +134,7 @@ export default function BlogPost() {
 
             <div className="mt-12 relative aspect-[21/9] w-full overflow-hidden border border-white/10 rounded-sm group">
               <img
-                src="/blog/one-dollar-ai-agent.png"
+                src="/blog-assets/one-dollar-ai-agent.png"
                 alt="The $1/Month AI Agent"
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               />
