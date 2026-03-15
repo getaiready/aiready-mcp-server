@@ -1,0 +1,43 @@
+{
+  "name": "@aiready/mcp-server",
+  "version": "0.1.0",
+  "description": "AIReady Model Context Protocol (MCP) Server",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "aiready-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean --dts",
+    "dev": "tsup src/index.ts --format esm --watch",
+    "test": "vitest run",
+    "lint": "eslint src",
+    "clean": "rm -rf dist",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@aiready/core": "workspace:*",
+    "@aiready/pattern-detect": "workspace:*",
+    "@aiready/context-analyzer": "workspace:*",
+    "@aiready/consistency": "workspace:*",
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "chalk": "^5.3.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.0"
+  },
+  "keywords": [
+    "aiready",
+    "mcp",
+    "model-context-protocol",
+    "ai-readiness",
+    "code-analysis"
+  ],
+  "license": "MIT"
+}
