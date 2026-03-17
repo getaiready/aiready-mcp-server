@@ -134,15 +134,12 @@ export default $config({
         command: 'pnpm run dev:next',
         autostart: true,
       },
-      domain:
-        $app.stage === 'production'
-          ? {
-              name: domainName,
-              dns: sst.cloudflare.dns({
-                zone: '50eb7dcadc84c58ab34583742db0b671',
-              }),
-            }
-          : undefined,
+      domain: {
+        name: domainName,
+        dns: sst.cloudflare.dns({
+          zone: '50eb7dcadc84c58ab34583742db0b671',
+        }),
+      },
       environment: {
         NEXT_PUBLIC_APP_URL: `https://${domainName}`,
         LEAD_API_URL: api.url,

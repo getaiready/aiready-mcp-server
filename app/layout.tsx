@@ -44,10 +44,10 @@ export const metadata: Metadata = {
       "The world's first autonomous agentic system for AWS. Real-time infrastructure synthesis and self-healing.",
     images: [
       {
-        url: '/hero.png',
+        url: '/og-home.png',
         width: 1200,
         height: 630,
-        alt: 'ClawMore - Autonomous Infrastructure',
+        alt: 'ClawMore - Autonomous Infrastructure Evolution',
       },
     ],
   },
@@ -56,8 +56,8 @@ export const metadata: Metadata = {
     title: 'ClawMore | Autonomous Infrastructure Evolution',
     description:
       "The world's first autonomous agentic system for AWS. Real-time infrastructure synthesis and self-healing.",
-    images: ['/hero.png'],
     creator: '@clawmore',
+    images: ['/og-home.png'],
   },
   robots: {
     index: true,

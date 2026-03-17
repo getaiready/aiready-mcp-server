@@ -13,14 +13,6 @@ export const metadata: Metadata = {
       'Automate high-quality content production with AI. Scale your content agency and deliver outsized results with AI-driven workflows.',
     url: 'https://clawmore.com',
     siteName: 'ClawMore',
-    images: [
-      {
-        url: 'https://clawmore.com/logo-text-raw-1024.png',
-        width: 1024,
-        height: 1024,
-        alt: 'ClawMore Logo',
-      },
-    ],
     locale: 'en_US',
     type: 'website',
   },
@@ -29,7 +21,6 @@ export const metadata: Metadata = {
     title: 'ClawMore - Scale Your Agency with AI Content Operations',
     description:
       'Automate high-quality content production with AI content operations.',
-    images: ['https://clawmore.com/logo-text-raw-1024.png'],
     creator: '@clawmore',
   },
   alternates: {

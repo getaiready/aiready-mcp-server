@@ -12,12 +12,20 @@ export const metadata: Metadata = {
     url: 'https://clawmore.com/blog',
     images: [
       {
-        url: 'https://clawmore.com/logo-text-raw-1024.png',
-        width: 1024,
-        height: 1024,
-        alt: 'ClawMore Logo',
+        url: '/og-blog.png',
+        width: 1200,
+        height: 630,
+        alt: 'ClawMore Blog - Agentic Insights',
       },
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ClawMore Blog - AI Content Operations & Autonomous Agents',
+    description:
+      'Insights into building high-scale AI content engines and autonomous agent architectures.',
+    creator: '@clawmore',
+    images: ['/og-blog.png'],
   },
 };
 

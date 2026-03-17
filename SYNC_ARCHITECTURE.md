@@ -71,12 +71,20 @@ While `git subtree` is the primitive, our architecture wraps it in a governance 
 
 We shift from manual Makefiles to an **Autonomous Sync Swarm**:
 
-| Agent Role      | Responsibility                                                |
-| :-------------- | :------------------------------------------------------------ |
-| **Broadcaster** | Monitors Hub commits and initiates Spoke syncs.               |
-| **Validator**   | Runs test suites in Spokes post-sync.                         |
-| **Harvester**   | Scans Spokes for valuable mutations to bring back to the Hub. |
-| **Janitor**     | Cleans up sync branches and monitors repo health.             |
+| Agent Role      | Responsibility                                            |
+| :-------------- | :-------------------------------------------------------- |
+| **Broadcaster** | Monitors Hub commits and initiates Spoke syncs.           |
+| **Validator**   | Runs test suites in Spokes post-sync (uses GPT-5.4).      |
+| **Harvester**   | Management-plane agent scanning Spokes (uses GPT-5-mini). |
+| **Janitor**     | Cleans up sync branches and monitors repo health.         |
+
+### **The "Injected" Harvester Pattern**
+
+To maintain Trunk-Based Development (TBD) integrity in the Mother repo (`serverlessclaw`), the **Harvester** logic is decoupled:
+
+- **Registry**: Harvester lives in the `clawmore` management plane.
+- **Injection**: During client deployment, ClawMore creates a cross-account IAM role or GitHub Action secret that allows the Harvester to "reach in" and scan the Spoke.
+- **Benefit**: The client's codebase remains "pure" serverless logic without proprietary harvesting boilerplate.
 
 ---
 
