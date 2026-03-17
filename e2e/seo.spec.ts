@@ -7,7 +7,7 @@ test.describe('ClawMore SEO Metadata', () => {
     const description = await page
       .locator('meta[name="description"]')
       .getAttribute('content');
-    expect(description).toContain('AI');
+    expect(description).toContain('AWS');
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       'content',
       /og-home.png/
