@@ -10,7 +10,7 @@ test.describe('ClawMore SEO Metadata', () => {
     expect(description).toContain('AI');
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       'content',
-      /logo-text-raw-1024.png/
+      /og-home.png/
     );
   });
 
@@ -39,7 +39,7 @@ test.describe('ClawMore SEO Metadata', () => {
     await expect(page).toHaveTitle(/Blog | ClawMore/);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       'content',
-      /logo-text-raw-1024.png/
+      /og-blog.png/
     );
   });
 });
