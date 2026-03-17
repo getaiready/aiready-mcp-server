@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import BlogClient from './BlogClient';
 
 export const metadata: Metadata = {
-  title: 'Blog | ClawMore - AI Content Operations Insights',
+  title: 'Blog | ClawMore - Agentic Insights & Infrastructure Evolution',
   description:
-    'Deep dives into AI content operations, autonomous agents, and scaling agency workflows at ClawMore.',
+    'Deep dives into autonomous agentic systems, infrastructure evolution, and the future of agentic AWS operations at ClawMore.',
   openGraph: {
-    title: 'ClawMore Blog - AI Content Operations & Autonomous Agents',
+    title: 'ClawMore Blog - Agentic Insights & Infrastructure Evolution',
     description:
-      'Insights into building high-scale AI content engines and autonomous agent architectures.',
-    url: 'https://clawmore.com/blog',
+      'Deep dives into autonomous agentic systems, infrastructure evolution, and the future of agentic AWS operations.',
+    url: 'https://clawmore.getaiready.dev/blog',
     images: [
       {
         url: '/og-blog.png',
@@ -21,11 +21,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ClawMore Blog - AI Content Operations & Autonomous Agents',
+    title: 'ClawMore Blog - Agentic Insights & Infrastructure Evolution',
     description:
-      'Insights into building high-scale AI content engines and autonomous agent architectures.',
+      'Deep dives into autonomous agentic systems, infrastructure evolution, and the future of agentic AWS operations.',
     creator: '@clawmore',
     images: ['/og-blog.png'],
+  },
+  alternates: {
+    canonical: 'https://clawmore.getaiready.dev/blog',
   },
 };
 
