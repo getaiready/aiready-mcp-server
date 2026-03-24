@@ -48,10 +48,7 @@ describe('RemediationSwarm - MiniMax Integration', () => {
     // Verify Agent was initialized with the correct model
     expect(Agent).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: expect.objectContaining({
-          provider: 'anthropic',
-          name: 'MiniMax-M2.7',
-        }),
+        model: 'anthropic/MiniMax-M2.7',
       })
     );
   });
@@ -71,10 +68,7 @@ describe('RemediationSwarm - MiniMax Integration', () => {
     // Verify Agent was initialized with the default model
     expect(Agent).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: expect.objectContaining({
-          provider: 'anthropic',
-          name: 'MiniMax-M2.7',
-        }),
+        model: 'anthropic/MiniMax-M2.7',
       })
     );
   });

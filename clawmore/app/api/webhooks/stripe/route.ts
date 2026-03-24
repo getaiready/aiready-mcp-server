@@ -48,25 +48,40 @@ export async function POST(req: NextRequest) {
           const userEmail =
             session.customer_email || session.metadata?.userEmail;
           if (userEmail) {
-            // Find the user by email in DynamoDB
-            const { Items: _Items } = await docClient.query({
+            // Find the user by email in DynamoDB using GSI1
+            const res = await docClient.query({
               TableName,
-              IndexName: 'GSI1', // Assuming an email index exists, or we scan/fallback to PK if email is the PK
-              KeyConditionExpression: 'GSI1PK = :email',
-              ExpressionAttributeValues: { ':email': `USER#${userEmail}` },
+              IndexName: 'GSI1',
+              KeyConditionExpression: 'GSI1PK = :pk AND GSI1SK = :email',
+              ExpressionAttributeValues: {
+                ':pk': 'USER',
+                ':email': userEmail,
+              },
             });
 
-            // For now, let's assume we can locate the user ID or we store the email
-            // Increment the AI Fuel tank by $10.00 (1000 cents) as included in the base plan
-            console.log(`Setting up initial $10 AI Fuel for ${userEmail}`);
+            const userItem = res.Items?.[0];
+            if (userItem) {
+              const userId = userItem.PK.replace('USER#', '');
 
-            // In a real implementation, you would update the specific user's record:
-            // await docClient.update({
-            //   TableName,
-            //   Key: { PK: `USER#${userId}`, SK: 'PROFILE' },
-            //   UpdateExpression: 'SET aiTokenBalanceCents = if_not_exists(aiTokenBalanceCents, :zero) + :amount, stripeCustomerId = :customerId',
-            //   ExpressionAttributeValues: { ':zero': 0, ':amount': 1000, ':customerId': session.customer },
-            // });
+              // Update the user's metadata: set plan, customerId, subscriptionId and initial fuel pool
+              await docClient.update({
+                TableName,
+                Key: { PK: `USER#${userId}`, SK: 'METADATA' },
+                UpdateExpression:
+                  'SET stripeCustomerId = :customerId, stripeSubscriptionId = :subscriptionId, plan = :plan, aiFuelBalanceCents = if_not_exists(aiFuelBalanceCents, :zero) + :initialFuel, coEvolutionOptIn = :coEvo',
+                ExpressionAttributeValues: {
+                  ':customerId': session.customer as string,
+                  ':subscriptionId': session.subscription as string,
+                  ':plan': 'MANAGED',
+                  ':initialFuel': 1000, // $10 initial fuel
+                  ':zero': 0,
+                  ':coEvo': session.metadata?.coEvolutionOptIn === 'true',
+                },
+              });
+              console.log(
+                `Initialized managed subscription for user ${userId} (${userEmail})`
+              );
+            }
           }
         }
 
@@ -76,22 +91,77 @@ export async function POST(req: NextRequest) {
             session.metadata.amountCents || '1000',
             10
           );
-          console.log(
-            `Adding ${amountCents} cents to fuel pack for customer ${session.customer}`
-          );
+          const customerId = session.customer as string;
 
-          // Implementation would find the user by Stripe Customer ID and increment their balance
+          // Find user by Stripe Customer ID via GSI (assuming one exists)
+          // or we can store userEmail in metadata and use that.
+          // For now, let's check if we have the customerId in the database.
+          const res = await docClient.query({
+            TableName,
+            IndexName: 'GSI1',
+            KeyConditionExpression: 'GSI1PK = :customerId',
+            ExpressionAttributeValues: {
+              ':customerId': `STRIPE#${customerId}`,
+            },
+          });
+
+          const userItem = res.Items?.[0];
+          if (userItem) {
+            const userId = userItem.PK.replace('USER#', '');
+            await docClient.update({
+              TableName,
+              Key: { PK: `USER#${userId}`, SK: 'METADATA' },
+              UpdateExpression:
+                'SET aiFuelBalanceCents = if_not_exists(aiFuelBalanceCents, :zero) + :amount',
+              ExpressionAttributeValues: {
+                ':amount': amountCents,
+                ':zero': 0,
+              },
+            });
+            console.log(
+              `Added ${amountCents} cents to fuel pack for user ${userId}`
+            );
+          }
         }
         break;
       }
 
       case 'invoice.paid': {
-        // Handle monthly renewal of the subscription - add $10 fuel
         const invoice = event.data.object as any;
-        if (invoice.subscription) {
-          console.log(
-            `Invoice paid for subscription ${invoice.subscription}. Replenishing $10 monthly fuel allowance.`
-          );
+        const subscriptionId =
+          typeof invoice.subscription === 'string'
+            ? invoice.subscription
+            : invoice.subscription?.id;
+
+        if (subscriptionId) {
+          // Find user by subscription ID
+          const res = await docClient.query({
+            TableName,
+            IndexName: 'GSI1',
+            KeyConditionExpression: 'GSI1PK = :subscriptionId',
+            ExpressionAttributeValues: {
+              ':subscriptionId': `SUB#${subscriptionId}`,
+            },
+          });
+
+          const userItem = res.Items?.[0];
+          if (userItem) {
+            const userId = userItem.PK.replace('USER#', '');
+            // Replenish $10 monthly fuel allowance
+            await docClient.update({
+              TableName,
+              Key: { PK: `USER#${userId}`, SK: 'METADATA' },
+              UpdateExpression:
+                'SET aiFuelBalanceCents = if_not_exists(aiFuelBalanceCents, :zero) + :amount',
+              ExpressionAttributeValues: {
+                ':amount': 1000,
+                ':zero': 0,
+              },
+            });
+            console.log(
+              `Invoice paid for sub ${invoice.subscription}. Replenished $10 fuel for user ${userId}.`
+            );
+          }
         }
         break;
       }

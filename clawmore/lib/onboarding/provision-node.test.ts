@@ -22,6 +22,12 @@ vi.mock('../aws/governance', () => ({
   attachSCPToAccount: vi.fn().mockResolvedValue({}),
 }));
 
+// Mock DB
+vi.mock('../db', () => ({
+  createManagedAccountRecord: vi.fn().mockResolvedValue({}),
+  ensureUserMetadata: vi.fn().mockResolvedValue({}),
+}));
+
 // Mock Libsodium
 vi.mock('libsodium-wrappers', () => ({
   default: {
@@ -101,5 +107,15 @@ describe('ProvisioningOrchestrator', () => {
     expect(mockOctokit.actions.createOrUpdateRepoSecret).toHaveBeenCalledTimes(
       4
     );
+
+    // Verify DB Persistence
+    const { createManagedAccountRecord, ensureUserMetadata } =
+      await import('../db');
+    expect(createManagedAccountRecord).toHaveBeenCalledWith({
+      awsAccountId: 'acc-456',
+      ownerEmail: 'test@example.com',
+      repoName: 'test-repo',
+    });
+    expect(ensureUserMetadata).toHaveBeenCalledWith('test@example.com');
   });
 });

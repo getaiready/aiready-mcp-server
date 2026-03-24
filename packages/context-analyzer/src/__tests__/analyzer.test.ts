@@ -207,7 +207,7 @@ describe('calculateCohesion', () => {
     // Mock file - should return 1 despite mixed domains
     const cohesionMockFile = calculateCohesion(
       exports,
-      'src/test-utils/mocks.ts'
+      'src/__tests__/mocks.ts'
     );
     expect(cohesionMockFile).toBe(1);
 

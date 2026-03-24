@@ -77,8 +77,8 @@ RELEASE_ORDER := core $(MIDDLE_SPOKES) cli
 #     aws sts get-caller-identity
 #     aws configure list
 # ⚠️  Default profile: 'aiready' - MUST match your AWS credentials
-# Override with: export AWS_PROFILE=your-profile
-AWS_PROFILE ?= aiready
+# To use a different profile temporarily, use: make <target> AWS_PROFILE=alt-profile
+export AWS_PROFILE := aiready
 AWS_REGION ?= ap-southeast-2
 EXPECTED_AWS_ACCOUNT_ID := 316759592139
 

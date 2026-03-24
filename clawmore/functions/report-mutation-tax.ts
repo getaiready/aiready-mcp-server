@@ -1,12 +1,13 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { reportMeteredUsage } from '../lib/billing';
+import { createMutationRecord } from '../lib/db';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
 export const handler = async (event: any) => {
-  const { userId, mutationId } = event.detail; // Expecting userId or stripeSubscriptionItemId
+  const { userId, mutationId, repoName, type, status } = event.detail;
 
   if (!userId) {
     console.error('Missing userId in mutation event');
@@ -14,7 +15,16 @@ export const handler = async (event: any) => {
   }
 
   try {
-    // 1. Fetch the user's Stripe Subscription Item ID for Mutation Tax
+    // 1. Record the mutation in DynamoDB for the dashboard
+    await createMutationRecord({
+      userId,
+      mutationId,
+      repoName,
+      type: type || 'Infrastructure Mutation',
+      status: status || 'SUCCESS',
+    });
+
+    // 2. Fetch the user's Stripe Subscription Item ID for Mutation Tax
     const getCommand = new GetCommand({
       TableName: process.env.DYNAMO_TABLE,
       Key: {

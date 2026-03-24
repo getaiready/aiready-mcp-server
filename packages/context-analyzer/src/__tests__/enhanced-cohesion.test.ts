@@ -132,7 +132,10 @@ describe('Enhanced Cohesion Calculation', () => {
       },
     ];
 
-    const cohesion = calculateCohesion(exports, 'src/utils/test-helpers.ts');
+    const cohesion = calculateCohesion(
+      exports,
+      'src/__tests__/test-helpers.ts'
+    );
     expect(cohesion).toBe(1);
   });
 });

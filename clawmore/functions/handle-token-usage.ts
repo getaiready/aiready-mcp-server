@@ -35,20 +35,24 @@ export const handler = async (event: any) => {
       })
     );
 
-    const newBalance = updateResult.Attributes?.aiTokenBalanceCents;
+    const user = updateResult.Attributes;
+    const newBalance = user?.aiTokenBalanceCents;
+    const rechargeThreshold =
+      user?.aiRefillThresholdCents ?? RECHARGE_THRESHOLD_CENTS;
+    const rechargeAmount = user?.aiTopupAmountCents ?? RECHARGE_AMOUNT_CENTS;
+    const autoTopupEnabled = user?.autoTopupEnabled ?? true;
 
     // 3. Check for Recharge
-    if (newBalance < RECHARGE_THRESHOLD_CENTS) {
+    if (autoTopupEnabled && newBalance < rechargeThreshold) {
       console.log(
         `[TokenGuard] Balance low for ${userId} (${newBalance}c). Attempting auto-recharge...`
       );
 
-      const user = updateResult.Attributes;
       if (user?.stripeCustomerId) {
         try {
           // Attempt immediate charge
           await stripe.paymentIntents.create({
-            amount: RECHARGE_AMOUNT_CENTS,
+            amount: rechargeAmount,
             currency: 'usd',
             customer: user.stripeCustomerId,
             off_session: true,
@@ -63,7 +67,7 @@ export const handler = async (event: any) => {
               Key: { PK: `USER#${userId}`, SK: 'METADATA' },
               UpdateExpression:
                 'SET aiTokenBalanceCents = aiTokenBalanceCents + :refill',
-              ExpressionAttributeValues: { ':refill': RECHARGE_AMOUNT_CENTS },
+              ExpressionAttributeValues: { ':refill': rechargeAmount },
             })
           );
 

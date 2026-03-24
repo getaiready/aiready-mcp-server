@@ -143,8 +143,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         // Use the first email from ADMIN_EMAILS or a default for local dev
         const adminEmails = process.env.ADMIN_EMAILS
           ? process.env.ADMIN_EMAILS.split(',').map((e) => e.trim())
-          : ['admin@example.com'];
-        const primaryAdminEmail = adminEmails[0];
+          : []; // Strict enforcement: no default admin emails
+        const primaryAdminEmail = adminEmails[0] || 'admin@getaiready.dev';
 
         if (isCorrectPassword) {
           return {
@@ -175,7 +175,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         const adminEmails = process.env.ADMIN_EMAILS
           ? process.env.ADMIN_EMAILS.split(',').map((e) => e.trim())
-          : ['caopengau@gmail.com', 'admin@example.com'];
+          : [];
         session.user.isAdmin = adminEmails.includes(session.user.email);
       }
       return session;
@@ -186,7 +186,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       void profile;
       const adminEmails = process.env.ADMIN_EMAILS
         ? process.env.ADMIN_EMAILS.split(',').map((e) => e.trim())
-        : ['caopengau@gmail.com', 'admin@example.com'];
+        : [];
 
       const email = user.email || '';
       if (!email) return false;
@@ -227,7 +227,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       const adminEmails = process.env.ADMIN_EMAILS
         ? process.env.ADMIN_EMAILS.split(',').map((e) => e.trim())
-        : ['caopengau@gmail.com', 'admin@example.com'];
+        : [];
 
       const userEmail = auth?.user?.email || '';
       const isAdminEmail = adminEmails.includes(userEmail);

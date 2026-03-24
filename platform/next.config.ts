@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { withSentryConfig } from '@sentry/nextjs';
 
 // Suppress AWS SDK warning when both profile and static keys are set
 // by prioritizing the profile (which is the project standard)
@@ -22,4 +23,8 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  silent: true,
+  org: 'aiready',
+  project: 'platform',
+});

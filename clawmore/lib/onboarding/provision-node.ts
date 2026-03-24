@@ -9,6 +9,7 @@ import {
   assignAccountToOwner,
 } from '../aws/vending';
 import { createServerlessSCP, attachSCPToAccount } from '../aws/governance';
+import { createManagedAccountRecord, ensureUserMetadata } from '../db';
 
 export interface ProvisioningOptions {
   userEmail: string;
@@ -96,6 +97,17 @@ export class ProvisioningOrchestrator {
       'EVOLUTION_OPT_IN',
       coEvolutionOptIn ? 'true' : 'false'
     );
+
+    // 5. DynamoDB Persistence (Crucial for Dashboard and Billing)
+    console.log(`[Provision] Recording managed account in DynamoDB...`);
+    await createManagedAccountRecord({
+      awsAccountId: accountId,
+      ownerEmail: userEmail,
+      repoName,
+    });
+
+    // Ensure user has metadata (for credits and global settings)
+    await ensureUserMetadata(userEmail);
 
     console.log(`[Provision] Node successfully vended under ${githubOrg} org!`);
     return {

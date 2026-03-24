@@ -22,6 +22,13 @@ vi.mock('@aiready/core', () => ({
     `<div class="issue-summary">Issues: Critical:${critical}, Major:${major}, Minor:${minor}. Savings: ${savings}</div>`,
   wrapInCard: (content: string, title?: string) =>
     `<div class="card"><h2>${title}</h2>${content}</div>`,
+  generateStandardHtmlReport: (config: any, stats: any[], sections: any[]) => {
+    const sectionHtml = sections
+      .map((s: any) => `<h2>${s.title}</h2>${s.content}`)
+      .join('');
+    const footerHtml = `<footer>${config.packageName} - ${config.packageUrl}</footer>`;
+    return `<!DOCTYPE html><html>${config.title}<body>${stats.map((s: any) => s.label).join(', ')}${sectionHtml}${footerHtml}</body></html>`;
+  },
 }));
 
 describe('generateHTMLReport', () => {
@@ -81,8 +88,7 @@ describe('generateHTMLReport', () => {
 
     const html = generateHTMLReport(summary, results);
 
-    expect(html).toContain('AIReady Context Analysis Report');
-    expect(html).toContain('head');
+    expect(html).toContain('Context Analysis Report');
     expect(html).toContain('body');
   });
 

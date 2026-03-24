@@ -216,6 +216,7 @@ export default $config({
         SES_CONFIGURATION_SET:
           'aiready-landing-production-notificationemailconfig-ttxwnzxe',
         REMEDIATION_QUEUE_URL: remediationQueue.url,
+        NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
       },
     };
 

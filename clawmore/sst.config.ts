@@ -219,6 +219,7 @@ export default $config({
           process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || '',
         ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || '',
         ADMIN_EMAILS: process.env.ADMIN_EMAILS || '',
+        NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
       },
       permissions: [
         {

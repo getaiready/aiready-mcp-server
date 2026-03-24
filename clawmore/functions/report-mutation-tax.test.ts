@@ -12,6 +12,18 @@ vi.mock('@aws-sdk/lib-dynamodb', () => {
       this.input = input;
     }
   }
+  class MockUpdateCommand {
+    input: any;
+    constructor(input: any) {
+      this.input = input;
+    }
+  }
+  class MockQueryCommand {
+    input: any;
+    constructor(input: any) {
+      this.input = input;
+    }
+  }
   return {
     DynamoDBClient: vi.fn(),
     DynamoDBDocumentClient: {
@@ -20,6 +32,8 @@ vi.mock('@aws-sdk/lib-dynamodb', () => {
       })),
     },
     GetCommand: MockGetCommand,
+    UpdateCommand: MockUpdateCommand,
+    QueryCommand: MockQueryCommand,
   };
 });
 
@@ -48,9 +62,15 @@ describe('report-mutation-tax handler', () => {
       detail: {
         userId: 'user_123',
         mutationId: 'mut_456',
+        repoName: 'test-repo',
+        type: 'infra',
+        status: 'SUCCESS',
       },
     };
 
+    // First call: createMutationRecord (Update)
+    mockSend.mockResolvedValueOnce({});
+    // Second call: Get user metadata
     mockSend.mockResolvedValueOnce({
       Item: {
         stripeMutationSubscriptionItemId: 'si_789',
@@ -59,8 +79,17 @@ describe('report-mutation-tax handler', () => {
 
     await handler(event);
 
-    expect(mockSend).toHaveBeenCalled();
-    const getCall = mockSend.mock.calls[0][0] as any;
+    expect(mockSend).toHaveBeenCalledTimes(2);
+
+    // Verify UpdateCommand (from createMutationRecord)
+    const updateCall = mockSend.mock.calls[0][0] as any;
+    expect(updateCall.input.Key).toEqual({
+      PK: 'USER#user_123',
+      SK: 'MUTATION#mut_456',
+    });
+
+    // Verify GetCommand
+    const getCall = mockSend.mock.calls[1][0] as any;
     expect(getCall.input.Key).toEqual({ PK: 'USER#user_123', SK: 'METADATA' });
 
     expect(mockReportMeteredUsage).toHaveBeenCalledWith('si_789', 1);
@@ -74,7 +103,11 @@ describe('report-mutation-tax handler', () => {
       },
     };
 
+    // 1. Update mutation record
+    mockSend.mockResolvedValueOnce({});
+    // 2. Get user metadata (missing SI)
     mockSend.mockResolvedValueOnce({ Item: null } as any);
+
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     await handler(event);
@@ -97,12 +130,16 @@ describe('report-mutation-tax handler', () => {
       },
     };
 
+    // 1. Update mutation record
+    mockSend.mockResolvedValueOnce({});
+    // 2. Get user metadata (opted in)
     mockSend.mockResolvedValueOnce({
       Item: {
         stripeMutationSubscriptionItemId: 'si_789',
         coEvolutionOptIn: true,
       },
     } as any);
+
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     await handler(event);

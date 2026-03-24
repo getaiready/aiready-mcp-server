@@ -13,6 +13,9 @@ interface DashboardClientProps {
     aiTokenBalanceCents: number;
     aiRefillThresholdCents: number;
     mutationCount: number;
+    coEvolutionOptIn: boolean;
+    autoTopupEnabled: boolean;
+    recentMutations: any[];
   };
 }
 
@@ -24,10 +27,52 @@ export default function DashboardClient({
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'overview';
 
-  const [isCoevolutionEnabled, setIsCoevolutionEnabled] = React.useState(false);
-  const [isAutoTopupEnabled, setIsAutoTopupEnabled] = React.useState(true);
-  const [topupThresholdCents, setTopupThresholdCents] = React.useState(500); // $5.00
-  const [topupAmountCents, setTopupAmountCents] = React.useState(1000); // $10.00
+  const [isCoevolutionEnabled, setIsCoevolutionEnabled] = React.useState(
+    status.coEvolutionOptIn
+  );
+  const [isAutoTopupEnabled, setIsAutoTopupEnabled] = React.useState(
+    status.autoTopupEnabled
+  );
+  const [topupThresholdCents, setTopupThresholdCents] = React.useState(
+    status.aiRefillThresholdCents
+  );
+  const [topupAmountCents, setTopupAmountCents] = React.useState(1000); // $10.00 default
+
+  // --- Persistence Logic ---
+  const saveSettings = async (updates: any) => {
+    try {
+      await fetch('/api/user/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+    } catch (err) {
+      console.error('Failed to save settings:', err);
+    }
+  };
+
+  // Co-evolution toggle
+  const handleCoevolutionToggle = (enabled: boolean) => {
+    setIsCoevolutionEnabled(enabled);
+    saveSettings({ coEvolutionOptIn: enabled });
+  };
+
+  // Auto-topup toggle
+  const handleAutoTopupToggle = (enabled: boolean) => {
+    setIsAutoTopupEnabled(enabled);
+    saveSettings({ autoTopupEnabled: enabled });
+  };
+
+  // Debounced threshold save
+  React.useEffect(() => {
+    if (topupThresholdCents === status.aiRefillThresholdCents) return;
+
+    const timer = setTimeout(() => {
+      saveSettings({ aiRefillThresholdCents: topupThresholdCents });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [topupThresholdCents, status.aiRefillThresholdCents]);
 
   // Detect nearest AWS region based on timezone
   const [detectedRegion, setDetectedRegion] = React.useState('ap-southeast-2');
@@ -228,33 +273,50 @@ export default function DashboardClient({
                 </h2>
 
                 <div className="space-y-4">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-cyber-blue/20 transition-all group"
-                    >
-                      <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center border border-white/5 group-hover:bg-zinc-700 transition-colors">
-                        <Zap className="w-5 h-5 text-amber-500" />
+                  {status.recentMutations?.length > 0 ? (
+                    status.recentMutations.map((mutation: any, i: number) => (
+                      <div
+                        key={mutation.mutationId || i}
+                        className="flex items-center gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-cyber-blue/20 transition-all group"
+                      >
+                        <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center border border-white/5 group-hover:bg-zinc-700 transition-colors">
+                          <Zap
+                            className={`w-5 h-5 ${mutation.mutationStatus === 'FAILURE' ? 'text-rose-500' : 'text-amber-500'}`}
+                          />
+                        </div>
+                        <div className="flex-grow">
+                          <p className="text-sm font-black italic text-white uppercase tracking-tight">
+                            {mutation.mutationType || 'Infrastructure Mutation'}
+                          </p>
+                          <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
+                            {mutation.mutationStatus === 'SUCCESS'
+                              ? 'Successful Commit'
+                              : 'Mutation Failed'}{' '}
+                            •{' '}
+                            {new Date(mutation.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p
+                            className={`text-xs font-black italic uppercase ${mutation.mutationStatus === 'FAILURE' ? 'text-rose-500' : 'text-emerald-500'}`}
+                          >
+                            {mutation.mutationStatus === 'FAILURE'
+                              ? 'RETRY'
+                              : '+1 SCR'}
+                          </p>
+                          <p className="text-[8px] text-zinc-700 font-mono tracking-tighter mt-1 group-hover:text-zinc-500 transition-colors">
+                            ID: {mutation.mutationId?.slice(0, 8).toUpperCase()}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-grow">
-                        <p className="text-sm font-black italic text-white uppercase tracking-tight">
-                          Infrastucture Mutation v0.4.{i + 8}
-                        </p>
-                        <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
-                          Successful Commit • 2h ago
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs font-black text-emerald-500 italic uppercase">
-                          +1 SCR
-                        </p>
-                        <p className="text-[8px] text-zinc-700 font-mono tracking-tighter mt-1 group-hover:text-zinc-500 transition-colors">
-                          ID: CLAW_
-                          {((i + 1) * 1234).toString(36).toUpperCase()}
-                        </p>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="py-12 text-center bg-black/20 border border-white/5 border-dashed rounded-2xl">
+                      <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">
+                        No Recent Mutations Recorded
+                      </p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
@@ -380,8 +442,8 @@ export default function DashboardClient({
                         type="checkbox"
                         className="sr-only peer"
                         checked={isCoevolutionEnabled}
-                        onChange={() =>
-                          setIsCoevolutionEnabled(!isCoevolutionEnabled)
+                        onChange={(e) =>
+                          handleCoevolutionToggle(e.target.checked)
                         }
                       />
                       <div className="w-12 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
@@ -542,8 +604,8 @@ export default function DashboardClient({
                         type="checkbox"
                         className="sr-only peer"
                         checked={isAutoTopupEnabled}
-                        onChange={() =>
-                          setIsAutoTopupEnabled(!isAutoTopupEnabled)
+                        onChange={(e) =>
+                          handleAutoTopupToggle(e.target.checked)
                         }
                       />
                       <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 shadow-inner"></div>

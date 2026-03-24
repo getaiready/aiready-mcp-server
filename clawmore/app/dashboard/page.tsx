@@ -1,6 +1,11 @@
 import { auth } from '../../auth';
 import { redirect } from 'next/navigation';
 import DashboardClient from './DashboardClient';
+import {
+  getManagedAccountsForUser,
+  getUserMetadata,
+  getRecentMutationsForUser,
+} from '../../lib/db';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -9,14 +14,32 @@ export default async function DashboardPage() {
     redirect('/api/auth/signin');
   }
 
-  // Placeholder data for the managed platform status
-  // In a real implementation, we'd fetch this from DynamoDB
+  const userEmail = session.user.email;
+
+  // 1. Fetch Managed Accounts
+  const accounts = await getManagedAccountsForUser(userEmail);
+
+  // 2. Fetch User Metadata (Credits, Settings)
+  const metadata = await getUserMetadata(userEmail);
+
+  // 3. Fetch Recent Mutations
+  const mutations = await getRecentMutationsForUser(userEmail);
+
+  // 4. Aggregate stats
+  const totalSpendCents = accounts.reduce(
+    (sum, acc) => sum + (acc.currentMonthlySpendCents || 0),
+    0
+  );
+
   const statusData = {
-    awsSpendCents: 1250, // $12.50
-    awsInclusionCents: 1500, // $15.00
-    aiTokenBalanceCents: 450, // $4.50
-    aiRefillThresholdCents: 100, // $1.00
-    mutationCount: 12,
+    awsSpendCents: totalSpendCents,
+    awsInclusionCents: 1500, // $15.00 base inclusion
+    aiTokenBalanceCents: metadata?.aiTokenBalanceCents ?? 0,
+    aiRefillThresholdCents: metadata?.aiRefillThresholdCents ?? 100,
+    mutationCount: mutations.length, // Total count could be stored in metadata for efficiency later
+    coEvolutionOptIn: metadata?.coEvolutionOptIn ?? false,
+    autoTopupEnabled: metadata?.autoTopupEnabled ?? true,
+    recentMutations: mutations,
   };
 
   const adminEmails = process.env.ADMIN_EMAILS
@@ -29,7 +52,7 @@ export default async function DashboardPage() {
   return (
     <DashboardClient
       user={session.user}
-      status={statusData}
+      status={statusData as any}
       isAdmin={isAdmin}
     />
   );
