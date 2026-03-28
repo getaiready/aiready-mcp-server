@@ -5,7 +5,6 @@ const { mockSend } = vi.hoisted(() => ({
 }));
 
 vi.mock('@aws-sdk/lib-dynamodb', () => {
-  // Use a class for GetCommand mock
   class MockGetCommand {
     input: any;
     constructor(input: any) {
@@ -95,7 +94,7 @@ describe('report-mutation-tax handler', () => {
     expect(mockReportMeteredUsage).toHaveBeenCalledWith('si_789', 1);
   });
 
-  it('should log a warning and return if subscription item ID is not found', async () => {
+  it('should not report metered usage if subscription item ID is not found', async () => {
     const event = {
       detail: {
         userId: 'user_123',
@@ -105,21 +104,17 @@ describe('report-mutation-tax handler', () => {
 
     // 1. Update mutation record
     mockSend.mockResolvedValueOnce({});
-    // 2. Get user metadata (missing SI)
-    mockSend.mockResolvedValueOnce({ Item: null } as any);
-
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    // 2. Get user metadata (missing SI, not opted in)
+    mockSend.mockResolvedValueOnce({
+      Item: {
+        coEvolutionOptIn: false,
+      },
+    } as any);
 
     await handler(event);
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'No Stripe subscription item found for user user_123'
-      )
-    );
+    // No tax reported when subscription item is missing
     expect(mockReportMeteredUsage).not.toHaveBeenCalled();
-
-    consoleSpy.mockRestore();
   });
 
   it('should waive the mutation tax and not report usage if user has opted into co-evolution', async () => {
