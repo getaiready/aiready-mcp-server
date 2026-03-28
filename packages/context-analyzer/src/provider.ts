@@ -58,8 +58,8 @@ export const ContextAnalyzerProvider: ToolProvider = {
   },
 
   score(output: SpokeOutput, options: ScanOptions): ToolScoringOutput {
-    const summary = output.summary as any;
-    return calculateContextScore(summary, (options as any).costConfig);
+    const summary = output.summary;
+    return calculateContextScore(summary, options.costConfig);
   },
 
   defaultWeight: 19,

@@ -29,7 +29,7 @@ export async function extractExportsWithAST(
 
     return astExports.map((exp) => ({
       name: exp.name,
-      type: exp.type as any,
+      type: exp.type as ExportInfo['type'],
       inferredDomain: inferDomain(
         exp.name,
         filePath,
@@ -38,7 +38,7 @@ export async function extractExportsWithAST(
       ),
       imports: exp.imports,
       dependencies: exp.dependencies,
-      typeReferences: (exp as any).typeReferences,
+      typeReferences: exp.typeReferences,
     }));
   } catch {
     // Ultimate fallback

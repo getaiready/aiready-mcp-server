@@ -63,8 +63,8 @@ export function calculateEnhancedCohesion(
       if (exp1Imports || exp2Imports) {
         anyImportData = true;
         const sim = calculateImportSimilarity(
-          { ...exports[i], imports: exp1Imports || [] } as any,
-          { ...exports[j], imports: exp2Imports || [] } as any
+          { ...exports[i], imports: exp1Imports || [] } as { name: string; imports: string[] },
+          { ...exports[j], imports: exp2Imports || [] } as { name: string; imports: string[] }
         );
         importScoreTotal += sim;
         pairsWithData++;

@@ -89,7 +89,7 @@ export function useForceSimulation(
         typeof l.target === 'string'
           ? l.target
           : (l.target as SimulationNode)?.id;
-      const linkType = (l as any).type || '';
+      const linkType = (l as { type?: string }).type || '';
       return `${sourceId}->${targetId}:${linkType}`;
     })
     .join('|');
@@ -156,7 +156,7 @@ export function useForceSimulation(
       const linkForce = d3
         .forceLink<SimulationNode, SimulationLink>(linksCopy)
         .id((d) => d.id)
-        .distance((d) => (d as any).distance ?? linkDistance)
+        .distance((d) => (d as { distance?: number }).distance ?? linkDistance)
         .strength(linkStrength);
 
       simulation

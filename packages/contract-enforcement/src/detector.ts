@@ -419,7 +419,7 @@ export function detectDefensivePatterns(
       }
 
       if (returnAnno?.type === 'TSAnyKeyword') {
-        const returnTypeNode = (node as any).returnType;
+        const returnTypeNode = 'returnType' in node ? (node as { returnType?: unknown }).returnType : undefined;
         if (returnTypeNode?.loc) {
           counts['any-return']++;
           issues.push(
