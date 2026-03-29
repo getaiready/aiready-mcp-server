@@ -59,6 +59,68 @@ export class AIReadyMcpServer {
     };
   }
 
+  private async handleRemediation(args: {
+    issue_id: string;
+    file_path: string;
+    context: string;
+  }) {
+    const apiKey = process.env.AIREADY_API_KEY;
+    const serverUrl =
+      process.env.AIREADY_PLATFORM_URL || 'https://platform.getaiready.dev';
+
+    if (!apiKey) {
+      throw new Error(
+        'AIREADY_API_KEY is not set. Remediation requires an active subscription.'
+      );
+    }
+
+    console.error(`[MCP] Requesting remediation for ${args.issue_id}...`);
+
+    try {
+      const response = await fetch(`${serverUrl}/api/v1/remediate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-KEY': apiKey,
+        },
+        body: JSON.stringify({
+          issueId: args.issue_id,
+          filePath: args.file_path,
+          context: args.context,
+          agent: 'mcp-server',
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          `Platform Error: ${errorData.message || response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `Recommended Fix (Diff):\n\n${data.diff}\n\nRationale:\n${data.rationale}`,
+          },
+        ],
+      };
+    } catch (error: any) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `Failed to get remediation: ${error.message}. Please visit the dashboard to fix manually.`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
   private setupHandlers() {
     // List available tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -77,21 +139,46 @@ export class AIReadyMcpServer {
       ];
 
       return {
-        tools: toolsToAdvertise.map((id) => ({
-          name: id,
-          description: `AIReady analysis tool: ${id}`,
-          inputSchema: {
-            type: 'object',
-            properties: {
-              path: {
-                type: 'string',
-                description: 'Path to the directory to analyze',
+        tools: [
+          ...toolsToAdvertise.map((id) => ({
+            name: id,
+            description: `Scan the directory for ${id} issues to improve AI-readiness.`,
+            inputSchema: {
+              type: 'object',
+              properties: {
+                path: {
+                  type: 'string',
+                  description: 'Path to the directory to analyze',
+                },
               },
-              // Future: expose tool-specific options
+              required: ['path'],
             },
-            required: ['path'],
+          })),
+          {
+            name: 'get_remediation_diff',
+            description:
+              'Get a precise code diff to fix a specific AI-readiness issue (Requires AIReady API Key).',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                issue_id: {
+                  type: 'string',
+                  description:
+                    'The unique ID of the issue to fix (from a scan).',
+                },
+                file_path: {
+                  type: 'string',
+                  description: 'The path to the file containing the issue.',
+                },
+                context: {
+                  type: 'string',
+                  description: 'The content of the file or surrounding code.',
+                },
+              },
+              required: ['issue_id', 'file_path', 'context'],
+            },
           },
-        })),
+        ],
       };
     });
 
@@ -100,6 +187,10 @@ export class AIReadyMcpServer {
       const { name, arguments: args } = request.params;
 
       try {
+        if (name === 'get_remediation_diff') {
+          return await this.handleRemediation(args as any);
+        }
+
         let provider = ToolRegistry.find(name);
 
         // Dynamic loading if not already registered (CLI pattern)
