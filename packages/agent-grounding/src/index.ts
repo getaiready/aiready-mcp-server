@@ -7,3 +7,4 @@ ToolRegistry.register(AGENT_GROUNDING_PROVIDER);
 export * from './types';
 export * from './analyzer';
 export { AGENT_GROUNDING_PROVIDER };
+export { calculateAgentGrounding as calculateGroundingScore } from '@aiready/core';

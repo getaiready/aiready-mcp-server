@@ -7,3 +7,4 @@ ToolRegistry.register(CONTRACT_ENFORCEMENT_PROVIDER);
 export * from './types';
 export * from './analyzer';
 export { CONTRACT_ENFORCEMENT_PROVIDER };
+export { calculateContractEnforcementScore } from './scoring';
