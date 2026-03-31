@@ -378,15 +378,15 @@ deploy-monitors-all: monitor-secrets ## Deploy all health monitors (sets secrets
 
 deploy-landing-monitor: ## Deploy Cloudflare health monitor for landing
 	@$(call log_step,Deploying landing health monitor)
-	@$(call wrangler_cmd,landing/monitor,deploy)
+	@$(call wrangler_cmd,apps/landing/monitor,deploy)
 
 deploy-clawmore-monitor: ## Deploy Cloudflare health monitor for ClawMore
 	@$(call log_step,Deploying clawmore health monitor)
-	@$(call wrangler_cmd,clawmore/monitor,deploy)
+	@$(call wrangler_cmd,apps/clawmore/monitor,deploy)
 
 deploy-platform-monitor: ## Deploy Cloudflare health monitor for Platform
 	@$(call log_step,Deploying platform health monitor)
-	@$(call wrangler_cmd,platform/monitor,deploy)
+	@$(call wrangler_cmd,apps/platform/monitor,deploy)
 
 monitor-logs-landing: ## Show landing monitor logs
 	@cd apps/landing/monitor && pnpm wrangler logs

@@ -149,8 +149,10 @@ describe('RemediationSwarm (Direct Tools)', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value.status).toBe('success');
-      expect(result.value.explanation).toContain('fallback to text response');
+      expect(result.value.status).toBe('failure');
+      expect(result.value.explanation).toContain(
+        'Agent failed to return a structured JSON response'
+      );
     }
   });
 

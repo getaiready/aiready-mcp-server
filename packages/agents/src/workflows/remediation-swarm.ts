@@ -87,6 +87,7 @@ function createSwarmTools(
         filePath: z.string().describe('Relative path to the file'),
       }),
       execute: async ({ filePath }) => {
+        console.log(`[SwarmTool:read-file] Reading ${filePath}`);
         const fullPath = path.resolve(rootDir, filePath);
         if (!fullPath.startsWith(path.resolve(rootDir))) {
           return { error: 'Access denied: path traversal attempt' };
@@ -111,6 +112,9 @@ function createSwarmTools(
         content: z.string().describe('File content to write'),
       }),
       execute: async ({ filePath, content }) => {
+        console.log(
+          `[SwarmTool:write-file] Writing ${content.length} characters to ${filePath}`
+        );
         const fullPath = path.resolve(rootDir, filePath);
         if (!fullPath.startsWith(path.resolve(rootDir))) {
           return {
@@ -140,6 +144,7 @@ function createSwarmTools(
       }),
       execute: async ({ dirPath }) => {
         const resolvedDir = dirPath ?? '.';
+        console.log(`[SwarmTool:list-files] Listing ${resolvedDir}`);
         const fullPath = path.resolve(rootDir, resolvedDir);
         if (!fullPath.startsWith(path.resolve(rootDir))) {
           return { error: 'Access denied: path traversal attempt' };
@@ -170,6 +175,9 @@ function createSwarmTools(
       }),
       execute: async ({ branchName, baseBranch }) => {
         const base = baseBranch || 'main';
+        console.log(
+          `[SwarmTool:create-branch] Creating ${branchName} from ${base}`
+        );
         try {
           const { data: ref } = await octokit.git.getRef({
             owner,
@@ -202,6 +210,7 @@ function createSwarmTools(
         branchName: z.string().describe('Branch name to checkout'),
       }),
       execute: async ({ branchName }) => {
+        console.log(`[SwarmTool:checkout-branch] Checking out ${branchName}`);
         try {
           await git.branch({ fs, dir: rootDir, ref: branchName });
           await git.checkout({
@@ -231,6 +240,9 @@ function createSwarmTools(
         message: z.string().describe('Commit message'),
       }),
       execute: async ({ branchName, message }) => {
+        console.log(
+          `[SwarmTool:commit-and-push] Committing changes and pushing to ${branchName}`
+        );
         try {
           await git.add({ fs, dir: rootDir, filepath: '.' });
           await git.commit({
@@ -272,6 +284,9 @@ function createSwarmTools(
         base: z.string().default('main').describe('Target branch'),
       }),
       execute: async ({ title, body, head, base }) => {
+        console.log(
+          `[SwarmTool:create-pr] Creating PR: ${title} (${head} -> ${base || 'main'})`
+        );
         try {
           const { data: pr } = await octokit.pulls.create({
             owner,
@@ -474,11 +489,10 @@ Remember: respond with ONLY a JSON object.`;
       return {
         ok: true,
         value: {
-          status: 'success',
-          diff: text,
+          status: 'failure',
+          diff: '',
           reasoning,
-          explanation:
-            'Applied refactoring successfully (fallback to text response)',
+          explanation: `Agent failed to return a structured JSON response. Raw output: ${text.substring(0, 500)}...`,
         },
       };
     } catch (error) {
