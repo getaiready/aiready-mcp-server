@@ -132,7 +132,8 @@ export async function handleAnalysis(
           ? importError.message
           : String(importError);
       throw new Error(
-        `Tool ${name} not found and failed to load package ${packageName}: ${importErrorMessage}`
+        `Tool ${name} not found and failed to load package ${packageName}: ${importErrorMessage}`,
+        { cause: importError } as any
       );
     }
   }

@@ -62,7 +62,7 @@ Run the \`aiready-mcp\` tool for a detailed analysis.`;
       return '# AIReady Roadmap\n\nNo scan has been run yet. Run an AIReady scan to generate a prioritized roadmap.';
     }
 
-    const { score, summary, issues } = this.lastResults;
+    const { score, issues } = this.lastResults;
     const grade = this.calculateGrade(score);
 
     let roadmap = `# AIReady Roadmap\n\n`;

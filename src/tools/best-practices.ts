@@ -37,7 +37,7 @@ export async function handleGetBestPractices(
     // e.g., "## 1. Pattern Detection (patterns)"
     const lines = content.split('\n');
     let inSection = false;
-    let sectionContent: string[] = [];
+    const sectionContent: string[] = [];
 
     for (const line of lines) {
       if (
