@@ -27,10 +27,10 @@ Project Score: **${score}/100 (${grade})**
 Last Scan: ${this.lastScanTimestamp}
 
 ## Issue Breakdown
-- Critical: ${summary.critical}
-- Major: ${summary.major}
-- Minor: ${summary.minor}
-- Info: ${summary.info}
+- Critical: ${summary.criticalIssues}
+- Major: ${summary.majorIssues}
+- Total Issues: ${summary.totalIssues}
+- Files Analyzed: ${summary.totalFiles}
 
 Run the \`aiready-mcp\` tool for a detailed analysis.`;
   }

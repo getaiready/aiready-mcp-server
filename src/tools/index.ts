@@ -52,10 +52,6 @@ export const TOOL_PACKAGE_MAP: Record<string, string> = {
   'deps-health': '@aiready/deps',
   'change-amp': '@aiready/change-amplification',
   'contract-enforce': '@aiready/contract-enforcement',
-  'cognitive-load': '@aiready/cognitive-load',
-  'pattern-entropy': '@aiready/pattern-entropy',
-  'concept-cohesion': '@aiready/concept-cohesion',
-  'semantic-distance': '@aiready/semantic-distance',
 };
 
 /**
@@ -135,8 +131,13 @@ export async function handleAnalysis(
 
   // Format results for the agent
   if (summary_only) {
+    const summary = results.summary;
     return {
-      summary: results.summary,
+      summary: `## Issue Breakdown
+- Critical: ${summary.criticalIssues}
+- Major: ${summary.majorIssues}
+- Total Issues: ${summary.totalIssues}
+- Files Analyzed: ${summary.totalFiles}`,
       metadata: results.metadata,
       notice:
         'Detailed issues were omitted (summary_only: true). Run without summary_only for full details.',
