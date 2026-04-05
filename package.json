@@ -33,16 +33,16 @@
     "@aiready/doc-drift": "workspace:*",
     "@aiready/pattern-detect": "workspace:*",
     "@aiready/testability": "workspace:*",
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "chalk": "^5.3.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "chalk": "^5.6.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "esbuild": "^0.27.3",
-    "tsup": "^8.3.5",
+    "@types/node": "^24.12.2",
+    "esbuild": "^0.27.7",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.1"
+    "vitest": "^4.1.2"
   },
   "keywords": [
     "aiready",
